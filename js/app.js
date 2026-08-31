@@ -445,6 +445,12 @@ document.getElementById("day-panel-close").addEventListener("click", () => {
   openPanelIndex = null;
 });
 
+// Footer is mostly hidden and reveals on hover (desktop). Touch devices have
+// no hover, so a tap toggles it open/closed instead.
+document.getElementById("app-footer").addEventListener("click", (e) => {
+  e.currentTarget.classList.toggle("expanded");
+});
+
 function buildTimeline() {
   const list = document.getElementById("timeline-list");
   list.innerHTML = trip.days
