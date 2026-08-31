@@ -32,13 +32,18 @@ body {
 .app-header {
   flex: 0 0 auto;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
+  flex-direction: column;
+  gap: 0.5rem;
   padding: 0.9rem 1.25rem;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
+}
+
+.header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .header-title h1 {
@@ -55,12 +60,18 @@ body {
 
 .header-tabs {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   gap: 0.4rem;
+  scrollbar-width: thin;
 }
 
+.header-tabs::-webkit-scrollbar { height: 4px; }
+.header-tabs::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
+
 .tab-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
   border: 1px solid var(--color-border);
   background: var(--color-bg);
   color: var(--color-ink);
@@ -93,18 +104,18 @@ body {
 
 .lang-switch {
   display: inline-flex;
+  flex: 0 0 auto;
   border: 1px solid var(--color-border);
   border-radius: 999px;
   overflow: hidden;
-  margin-left: 0.2rem;
 }
 
 .lang-btn {
   border: none;
   background: var(--color-bg);
   color: var(--color-muted);
-  padding: 0.45rem 0.75rem;
-  font-size: 0.8rem;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.7rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -118,36 +129,30 @@ body {
 
 @media (max-width: 640px) {
   .app-header {
-    padding: 0.6rem 0.75rem;
-    gap: 0.4rem;
-  }
-
-  .header-title h1 {
-    font-size: 1rem;
-  }
-
-  .header-title p {
-    font-size: 0.72rem;
-  }
-
-  .header-tabs {
-    width: 100%;
-    justify-content: center;
+    padding: 0.5rem 0.65rem;
     gap: 0.35rem;
   }
 
-  .lang-switch {
-    margin: 0 0.15rem;
+  .header-title h1 {
+    font-size: 0.92rem;
+  }
+
+  .header-title p {
+    font-size: 0.66rem;
+  }
+
+  .header-tabs {
+    gap: 0.3rem;
   }
 
   .lang-btn {
-    padding: 0.4rem 0.65rem;
-    font-size: 0.72rem;
+    padding: 0.22rem 0.42rem;
+    font-size: 0.62rem;
   }
 
   .tab-btn {
-    padding: 0.4rem 0.7rem;
-    font-size: 0.72rem;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.68rem;
   }
 
   .map-legend {
@@ -164,6 +169,22 @@ body {
   .legend-swatch {
     width: 9px;
     height: 9px;
+  }
+
+  .ais-panel {
+    inset: 0.5rem;
+    max-width: none;
+    max-height: 260px;
+  }
+
+  .ais-panel-header {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.74rem;
+  }
+
+  .ais-note {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.58rem;
   }
 }
 
@@ -446,8 +467,6 @@ main {
   cursor: pointer;
 }
 
-.app-footer:hover,
-.app-footer:focus-within,
 .app-footer.expanded {
   max-height: 200px;
 }
@@ -463,8 +482,6 @@ main {
   text-overflow: ellipsis;
 }
 
-.app-footer:hover .footer-copyright,
-.app-footer:focus-within .footer-copyright,
 .app-footer.expanded .footer-copyright {
   white-space: normal;
   overflow: visible;
@@ -564,6 +581,9 @@ main {
 .ais-panel {
   position: absolute;
   inset: 0.75rem;
+  max-width: 420px;
+  max-height: 380px;
+  margin: auto;
   z-index: 1400;
   background: var(--color-surface);
   border-radius: 10px;
@@ -579,9 +599,9 @@ main {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.6rem 0.9rem;
+  padding: 0.5rem 0.75rem;
   border-bottom: 1px solid var(--color-border);
-  font-size: 0.95rem;
+  font-size: 0.85rem;
 }
 
 .ais-panel-header .panel-close {
@@ -591,8 +611,8 @@ main {
 
 .ais-note {
   margin: 0;
-  padding: 0.35rem 0.9rem;
-  font-size: 0.74rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.66rem;
   color: var(--color-muted);
   background: var(--color-accent-soft);
 }

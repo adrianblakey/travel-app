@@ -62,10 +62,10 @@ const UI = {
   stateroomDeck: { en: "Typical deck for this category", de: "Übliches Deck für diese Kategorie" },
   deckPlanLink: { en: "View deck plan (PDF) →", de: "Deckplan ansehen (PDF) →" },
   aisToggleTitle: { en: "Show nearby ships (AIS)", de: "Schiffe in der Nähe zeigen (AIS)" },
-  aisPanelTitle: { en: "Live ship traffic", de: "Live-Schiffsverkehr" },
+  aisPanelTitle: { en: "Ships nearby", de: "Schiffe in der Nähe" },
   aisPrivacyNote: {
-    en: "Loads a live map from marinetraffic.com (third party) only while this panel is open — nothing is loaded until you open it.",
-    de: "Lädt eine Live-Karte von marinetraffic.com (Drittanbieter) nur, solange dieses Fenster geöffnet ist — es wird nichts geladen, bevor Sie es öffnen.",
+    en: "Live map from marinetraffic.com — loads only while open.",
+    de: "Live-Karte von marinetraffic.com — lädt nur bei geöffnetem Fenster.",
   },
   aisClose: { en: "Close", de: "Schließen" },
 };
@@ -355,9 +355,11 @@ function windyUrl(day) {
 }
 
 function wikipediaUrl(day) {
-  // Wikipedia has a climate section for almost any real place, and degrades
-  // gracefully (a search-suggestion page, never a dead link) if it doesn't.
-  const query = day.location.weatherQuery || t(day.location.name).split(",")[0].trim();
+  // Always the English Wikipedia, so the query must always be the English
+  // name — t(day.location.name) would pick the German name in German mode
+  // (e.g. "Amalia-Gletscher"), which doesn't exist as an en.wikipedia title.
+  const nameEn = typeof day.location.name === "string" ? day.location.name : day.location.name.en;
+  const query = day.location.weatherQuery || nameEn.split(",")[0].trim();
   return `https://en.wikipedia.org/wiki/${encodeURIComponent(query.replace(/\s+/g, "_"))}`;
 }
 
@@ -440,10 +442,20 @@ document.getElementById("day-panel-close").addEventListener("click", () => {
   openPanelIndex = null;
 });
 
-// Footer is mostly hidden and reveals on hover (desktop). Touch devices have
-// no hover, so a tap toggles it open/closed instead.
-document.getElementById("app-footer").addEventListener("click", (e) => {
+// Footer shows only its first line by default; a tap/click toggles the
+// full text open or closed. Deliberately not driven by :hover/:focus-within
+// — on touch devices those can get "stuck" active after a tap, which made
+// the second tap fail to collapse it. The class toggle below is the only
+// thing that opens or closes it, so it's reliable on every input type.
+const appFooter = document.getElementById("app-footer");
+appFooter.addEventListener("click", (e) => {
   e.currentTarget.classList.toggle("expanded");
+});
+appFooter.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    e.currentTarget.classList.toggle("expanded");
+  }
 });
 
 function buildTimeline() {
