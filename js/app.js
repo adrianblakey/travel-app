@@ -1,5 +1,5 @@
 // Bump this by 1 with every commit that changes the app (shown in the footer).
-const APP_VERSION = 8;
+const APP_VERSION = 9;
 
 const TRIPS_INDEX_URL = "data/trips/index.json";
 
