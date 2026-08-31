@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Trip</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-title">
+      <h1 id="trip-title">Loading trip…</h1>
+      <p id="trip-subtitle"></p>
+    </div>
+    <nav class="header-tabs">
+      <button class="tab-btn active" data-view="map">Route Map</button>
+      <button class="tab-btn" data-view="timeline">Day by Day</button>
+      <button class="tab-btn" data-view="ship">The Ship</button>
+      <a id="flights-link" class="tab-btn flights-link" href="#" target="_blank" rel="noopener" hidden></a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="view-map" class="view active">
+      <div id="map"></div>
+      <aside id="day-panel" class="day-panel hidden">
+        <button id="day-panel-close" class="panel-close" aria-label="Close">&times;</button>
+        <div id="day-panel-content"></div>
+      </aside>
+    </section>
+
+    <section id="view-timeline" class="view">
+      <ol id="timeline-list" class="timeline-list"></ol>
+    </section>
+
+    <section id="view-ship" class="view">
+      <div id="ship-info" class="ship-info"></div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>A shared trip itinerary — built for planning, kept for the memories.</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

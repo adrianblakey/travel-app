@@ -216,3 +216,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Personal trip documents (booking refs, payment/personal info) - never commit source docs
+*.pdf
+/data/raw/
+/data/private/
+
+# Build output
+/dist/
+/node_modules/
