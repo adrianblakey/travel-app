@@ -39,19 +39,45 @@ body {
   border-bottom: 1px solid var(--color-border);
 }
 
-.header-row {
+/* Row 1: title (left) with the bell + EN/DE switch pinned top-right — these
+   two never move to another row regardless of viewport width or how long
+   the trip title gets (align-items: flex-start keeps them pinned to the
+   title's first line even if the title itself wraps to a second line). */
+.header-top {
   display: flex;
-  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
-.header-controls {
+.header-top h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  letter-spacing: 0.01em;
+  min-width: 0;
+}
+
+.header-icons {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   flex: 0 0 auto;
+}
+
+.trip-subtitle {
+  margin: 0.15rem 0 0;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+/* Row 3: trip switcher (left) and the countdown badge next to it, above the
+   view tabs. */
+.header-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.3rem;
 }
 
 .trip-select {
@@ -63,24 +89,11 @@ body {
   font-size: 0.72rem;
   font-family: var(--font-sans);
   cursor: pointer;
-  max-width: 190px;
+  max-width: 220px;
 }
 
-.header-title h1 {
-  margin: 0;
-  font-size: 1.25rem;
-  letter-spacing: 0.01em;
-}
-
-.header-title p {
-  margin: 0.15rem 0 0;
-  color: var(--color-muted);
-  font-size: 0.9rem;
-}
-
-.header-title .trip-countdown {
+.trip-countdown {
   display: inline-block;
-  margin-top: 0.4rem;
   padding: 0.15rem 0.6rem;
   background: var(--color-accent-soft);
   color: var(--color-accent);
@@ -89,12 +102,19 @@ body {
   font-weight: 600;
 }
 
-.header-title .trip-countdown:empty { display: none; }
+.trip-countdown:empty { display: none; }
 
 .reminder-bell-wrap {
   position: relative;
-  display: inline-flex;
   flex: 0 0 auto;
+}
+
+/* Setting `display` directly on the same rule as `hidden` would win over
+   the browser's `[hidden] { display: none }` default (author styles beat
+   the UA stylesheet on a specificity tie), silently defeating
+   wrap.hidden = true in JS — so it's scoped to the non-hidden case only. */
+.reminder-bell-wrap:not([hidden]) {
+  display: inline-flex;
 }
 
 .reminder-bell {
@@ -234,11 +254,11 @@ body {
     gap: 0.35rem;
   }
 
-  .header-title h1 {
+  .header-top h1 {
     font-size: 0.92rem;
   }
 
-  .header-title p {
+  .trip-subtitle {
     font-size: 0.66rem;
   }
 
@@ -246,14 +266,19 @@ body {
     gap: 0.3rem;
   }
 
-  .header-controls {
-    gap: 0.3rem;
+  .header-meta {
+    gap: 0.4rem;
   }
 
   .trip-select {
-    max-width: 34vw;
+    max-width: 58vw;
     padding: 0.2rem 0.4rem;
     font-size: 0.62rem;
+  }
+
+  .trip-countdown {
+    font-size: 0.66rem;
+    padding: 0.12rem 0.5rem;
   }
 
   .lang-btn {

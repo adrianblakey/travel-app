@@ -294,12 +294,26 @@ CSS rule) rather than leaving a "completed" label showing forever.
 ## Reminders
 
 A trip's optional `reminders` (see the schema above) show as a small 🔔 in
-the header, next to the trip switcher — visible only while at least one
-reminder hasn't passed yet, with a small dot marking it as active. Hovering
-(or focusing, for keyboard use) shows the reminder text, its deadline, and a
-live "in N days" countdown in a tooltip (`buildReminders()`); there's no
-persistent banner, so it stays out of the way until you actually want to
-check it.
+the header, top-right next to the language switch — visible only while at
+least one reminder hasn't passed yet, with a small dot marking it as
+active. Hovering (or focusing, for keyboard use) shows the reminder text,
+its deadline, and a live "in N days" countdown in a tooltip
+(`buildReminders()`); there's no persistent banner, so it stays out of the
+way until you actually want to check it.
+
+Reminders are pooled across **every** trip in the manifest (`allReminders`,
+built alongside `dateIndex` in `buildDateIndex()`), not just the one
+currently loaded — a reminder is a personal to-do, not something tied to
+whichever trip page happens to be open, so it stays visible regardless of
+which trip you're viewing.
+
+The bell's wrapper is hidden via the `hidden` attribute (`wrap.hidden =
+true`), not a class — if you add CSS for it, keep any `display` rule scoped
+to `.reminder-bell-wrap:not([hidden])`. Setting `display` on the bare
+`.reminder-bell-wrap` selector would out-specificity the browser's own
+`[hidden] { display: none }` default and silently defeat `wrap.hidden =
+true` (this happened once already — the bell stayed visible-but-empty
+instead of hiding).
 
 ## App version
 

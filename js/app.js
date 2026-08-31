@@ -1,5 +1,5 @@
 // Bump this by 1 with every commit that changes the app (shown in the footer).
-const APP_VERSION = 6;
+const APP_VERSION = 7;
 
 const TRIPS_INDEX_URL = "data/trips/index.json";
 
@@ -147,6 +147,12 @@ let currentTripId = null;
 let dateIndex = new Map();
 let calendarViewDate = null; // first-of-month Date currently shown in the calendar grid
 
+// Every trip's reminders, pooled across the whole manifest — reminders are
+// personal to-dos, not tied to whichever trip page happens to be open, so
+// the bell stays relevant (and shows up at all) regardless of the trip
+// currently loaded. Array<{ tripId, date, label }>.
+let allReminders = [];
+
 try {
   const saved = localStorage.getItem("tripLang");
   if (saved === "en" || saved === "de") lang = saved;
@@ -180,11 +186,13 @@ async function init() {
   setupCalendarControls();
   await loadTrip(initialEntry);
 
-  // Fetches every trip's own JSON just to index its days' dates — done once,
-  // after the initial trip is already showing, so it never blocks first
-  // paint. The calendar re-renders once this resolves to pick up the dots.
+  // Fetches every trip's own JSON just to index its days' dates and pool
+  // its reminders — done once, after the initial trip is already showing,
+  // so it never blocks first paint. The calendar and bell re-render once
+  // this resolves to pick up what it found.
   await buildDateIndex();
   buildCalendar();
+  buildReminders();
 }
 
 async function buildDateIndex() {
@@ -192,12 +200,16 @@ async function buildDateIndex() {
     tripManifest.map((entry) => fetch(`data/trips/${entry.file}`).then((r) => r.json()))
   );
   dateIndex = new Map();
+  allReminders = [];
   tripsData.forEach((tripData) => {
     tripData.days.forEach((day, dayIndex) => {
       dayDates(day).forEach((iso) => {
         if (!dateIndex.has(iso)) dateIndex.set(iso, []);
         dateIndex.get(iso).push({ tripId: tripData.id, dayIndex, type: day.type });
       });
+    });
+    (tripData.reminders || []).forEach((r) => {
+      allReminders.push({ tripId: tripData.id, date: r.date, label: r.label });
     });
   });
 }
@@ -388,8 +400,9 @@ function buildCountdown() {
   }
 }
 
-// Populates the header bell's hover tooltip with reminders whose date/time
-// hasn't passed yet (the bell itself is hidden once there are none left).
+// Populates the header bell's hover tooltip from `allReminders` (pooled
+// across every trip, not just the one currently loaded) with whichever
+// haven't passed yet — the bell itself is hidden once there are none left.
 // Dates are stored as full ISO timestamps with an explicit UTC offset (e.g.
 // a booking window that opens at a specific real-world clock time, not
 // "sometime that day"), so comparisons and the displayed time both use UTC
@@ -400,9 +413,8 @@ function buildReminders() {
   const tooltip = document.getElementById("reminder-tooltip");
   document.getElementById("reminder-bell").setAttribute("aria-label", tr("remindersLabel"));
 
-  const reminders = trip.reminders || [];
   const now = new Date();
-  const upcoming = reminders.filter((r) => new Date(r.date) > now);
+  const upcoming = allReminders.filter((r) => new Date(r.date) > now);
 
   if (!upcoming.length) {
     wrap.hidden = true;

@@ -10,25 +10,25 @@
 </head>
 <body>
   <header class="app-header">
-    <div class="header-row">
-      <div class="header-title">
-        <h1 id="trip-title">Loading trip…</h1>
-        <p id="trip-subtitle"></p>
-        <p id="trip-countdown" class="trip-countdown"></p>
-      </div>
-      <div class="header-controls">
+    <div class="header-top">
+      <h1 id="trip-title">Loading trip…</h1>
+      <div class="header-icons">
         <div class="reminder-bell-wrap" id="reminder-bell-wrap" hidden>
           <button type="button" id="reminder-bell" class="reminder-bell" aria-label="Reminders">
             <span aria-hidden="true">🔔</span>
           </button>
           <div id="reminder-tooltip" class="reminder-tooltip" role="tooltip"></div>
         </div>
-        <select id="trip-select" class="trip-select" aria-label="Trip"></select>
         <div class="lang-switch" role="group" aria-label="Language / Sprache">
           <button class="lang-btn" data-lang="en">EN</button>
           <button class="lang-btn" data-lang="de">DE</button>
         </div>
       </div>
+    </div>
+    <p id="trip-subtitle" class="trip-subtitle"></p>
+    <div class="header-meta">
+      <select id="trip-select" class="trip-select" aria-label="Trip"></select>
+      <p id="trip-countdown" class="trip-countdown"></p>
     </div>
     <nav class="header-tabs">
       <button class="tab-btn active" data-view="map">Route Map</button>
