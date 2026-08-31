@@ -12,6 +12,10 @@
   "startDate": "2026-10-12",
   "endDate": "2026-10-19",
   "travelers": ["Adrian", "Dorothee"],
+  "flights": {
+    "label": { "en": "Lufthansa · Frankfurt ↔ Naples", "de": "Lufthansa · Frankfurt ↔ Neapel" },
+    "url": null
+  },
   "days": [
     {
       "date": "2026-10-12",
@@ -30,6 +34,7 @@
         "name": "Hotel La Vue d'Or, Sorrento",
         "url": "https://www.lavuedor.it/"
       },
+      "showFlights": true,
       "note": {
         "en": "This week's excursions and free days are confirmed as part of the booking, but the tour operator (STEWA Touristik) only sends the exact day-by-day running order in the final travel documents, about 6 days before departure. The order shown here (days 2–7) is a plausible arrangement based on how these tours are typically run — not yet the confirmed schedule. This page will be updated once the real itinerary arrives.",
         "de": "Die Ausflüge und Freizeittage dieser Woche sind laut Buchung bestätigt, aber der Reiseveranstalter (STEWA Touristik) verschickt den genauen Tagesablauf erst mit den endgültigen Reiseunterlagen, etwa 6 Tage vor Abreise. Die hier gezeigte Reihenfolge (Tag 2–7) ist eine plausible Anordnung nach dem üblichen Ablauf solcher Reisen — noch nicht der bestätigte Zeitplan. Diese Seite wird aktualisiert, sobald der tatsächliche Ablauf feststeht."
@@ -156,7 +161,8 @@
       "summary": {
         "en": "Transfer to Naples airport and flight home with Lufthansa to Frankfurt.",
         "de": "Transfer zum Flughafen Neapel und Rückflug mit Lufthansa nach Frankfurt."
-      }
+      },
+      "showFlights": true
     }
   ]
 }

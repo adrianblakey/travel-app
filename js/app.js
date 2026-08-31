@@ -1,5 +1,5 @@
 // Bump this by 1 with every commit that changes the app (shown in the footer).
-const APP_VERSION = 2;
+const APP_VERSION = 3;
 
 const TRIPS_INDEX_URL = "data/trips/index.json";
 
@@ -21,6 +21,7 @@ const UI = {
   tabTimeline: { en: "Day by Day", de: "Tag für Tag" },
   tabShip: { en: "The Ship", de: "Das Schiff" },
   flightsFallback: { en: "Flights", de: "Flüge" },
+  flightsTbd: { en: "not yet booked", de: "noch nicht gebucht" },
   arrive: { en: "Arrive", de: "Ankunft" },
   depart: { en: "Depart", de: "Abfahrt" },
   stayingAt: { en: "Staying at:", de: "Unterkunft:" },
@@ -273,12 +274,24 @@ function updateAisLabels() {
 
 function buildFlightsLink() {
   const link = document.getElementById("flights-link");
-  if (!trip.flights || !trip.flights.url) {
+  if (!trip.flights) {
     link.hidden = true;
     return;
   }
-  link.href = trip.flights.url;
-  link.textContent = `✈ ${trip.flights.label ? t(trip.flights.label) : tr("flightsFallback")}`;
+  const label = trip.flights.label ? t(trip.flights.label) : tr("flightsFallback");
+  if (trip.flights.url) {
+    link.href = trip.flights.url;
+    link.removeAttribute("aria-disabled");
+    link.classList.remove("flights-link-tbd");
+    link.textContent = `✈ ${label}`;
+  } else {
+    // Flight details aren't booked/confirmed yet — show a placeholder tab
+    // instead of hiding it, so the trip page doesn't look incomplete.
+    link.removeAttribute("href");
+    link.setAttribute("aria-disabled", "true");
+    link.classList.add("flights-link-tbd");
+    link.textContent = `✈ ${label} (${tr("flightsTbd")})`;
+  }
   link.hidden = false;
 }
 
@@ -334,6 +347,15 @@ function buildMap() {
     }).addTo(map);
   }
 
+  const bounds = L.latLngBounds(latlngs);
+  map.fitBounds(bounds, { padding: [10, 10] });
+
+  // Multiple days can share the exact same spot (e.g. several free days at
+  // the same hotel) — spreading their markers apart on screen keeps every
+  // one visible and clickable instead of stacking identically and hiding
+  // all but the last one drawn.
+  const markerLatLngs = spreadOverlappingMarkers(trip.days, map);
+
   trip.days.forEach((day, index) => {
     const color = TYPE_COLORS[day.type] || "#555";
     const isSea = day.type === "sea";
@@ -344,17 +366,47 @@ function buildMap() {
       iconSize: [size, size],
       iconAnchor: [size / 2, size / 2],
     });
-    const marker = L.marker([day.location.lat, day.location.lon], { icon }).addTo(map);
+    const marker = L.marker(markerLatLngs[index], { icon }).addTo(map);
 
     marker.bindTooltip("", { direction: "top", offset: [0, -(size / 2 + 2)] });
     marker.on("click", () => openDayPanel(index));
     dayLayers.push(marker);
   });
 
-  const bounds = L.latLngBounds(latlngs);
-  map.fitBounds(bounds, { padding: [10, 10] });
-
   addAisControl();
+}
+
+// Days that share the exact same coordinates (e.g. several free days at one
+// hotel) get their marker nudged into a small circle around the true point,
+// in screen pixels at the map's current zoom, so every marker stays visible
+// and clickable instead of stacking exactly on top of each other. This only
+// affects where the numbered badge is drawn — everywhere else (weather
+// links, map centering, the route line) keeps using the real coordinates.
+function spreadOverlappingMarkers(days, map) {
+  const groups = new Map();
+  days.forEach((day, index) => {
+    const key = `${day.location.lat.toFixed(4)},${day.location.lon.toFixed(4)}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(index);
+  });
+
+  const latlngs = days.map((day) => L.latLng(day.location.lat, day.location.lon));
+  const MARKER_SPACING = 33; // px between adjacent marker centers — roughly one badge width plus a small gap
+
+  groups.forEach((indices) => {
+    if (indices.length < 2) return;
+    const n = indices.length;
+    const angleStep = (2 * Math.PI) / n;
+    const radius = MARKER_SPACING / (2 * Math.sin(angleStep / 2));
+    const center = map.latLngToLayerPoint(latlngs[indices[0]]);
+    indices.forEach((dayIndex, i) => {
+      const angle = angleStep * i - Math.PI / 2; // start pointing up
+      const point = L.point(center.x + radius * Math.cos(angle), center.y + radius * Math.sin(angle));
+      latlngs[dayIndex] = map.layerPointToLatLng(point);
+    });
+  });
+
+  return latlngs;
 }
 
 function addAisControl() {
@@ -692,6 +744,14 @@ function advisoryLinksHtml(day) {
   return `<div class="weather-links"><a class="weather-link" href="${url}" target="_blank" rel="noopener">🛂 ${tr(labelKey)}</a></div>`;
 }
 
+function flightsNoteHtml() {
+  const label = trip.flights.label ? t(trip.flights.label) : tr("flightsFallback");
+  if (trip.flights.url) {
+    return `<p class="lodging-note"><a href="${trip.flights.url}" target="_blank" rel="noopener">✈ ${escapeHtml(label)} &rarr;</a></p>`;
+  }
+  return `<p class="lodging-note">✈ ${escapeHtml(label)} — <em>${tr("flightsTbd")}</em></p>`;
+}
+
 function openDayPanel(index) {
   openPanelIndex = index;
   const day = trip.days[index];
@@ -726,7 +786,7 @@ function openDayPanel(index) {
     ${timesHtml.length ? `<div class="panel-times">${timesHtml.join("")}</div>` : ""}
     <p class="panel-summary">${escapeHtml(t(day.summary))}</p>
     ${day.lodging ? `<p class="lodging-note">${tr("stayingAt")} ${lodgingHtml(day.lodging)}</p>` : ""}
-    ${day.showFlights && trip.flights ? `<p class="lodging-note"><a href="${trip.flights.url}" target="_blank" rel="noopener">✈ ${escapeHtml(trip.flights.label ? t(trip.flights.label) : tr("flightsFallback"))} &rarr;</a></p>` : ""}
+    ${day.showFlights && trip.flights ? flightsNoteHtml() : ""}
     ${day.note ? `<p class="day-note">${escapeHtml(t(day.note))}</p>` : ""}
     ${weatherLinksHtml(day)}
     ${advisoryLinksHtml(day)}

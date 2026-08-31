@@ -63,7 +63,11 @@ anything.
   "startDate": "YYYY-MM-DD",
   "endDate": "YYYY-MM-DD",
   "travelers": ["First name", "..."],
-  "flights": { "label": { "en": "...", "de": "..." }, "url": "..." },  // optional
+  "flights": { "label": { "en": "...", "de": "..." }, "url": "..." },  // optional;
+                                 // set "url" to null for a not-yet-booked
+                                 // placeholder — shows the label as a
+                                 // non-clickable "(not yet booked)" tab/note
+                                 // instead of hiding it or linking nowhere
   "vessel": { ... },            // optional — omit for non-cruise trips
   "stateroom": {                // optional — cruise-specific, rendered on the Ship tab
     "category": "PV3 — Penthouse Veranda",  // plain string, Viking's own product name
