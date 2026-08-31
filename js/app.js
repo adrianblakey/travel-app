@@ -36,6 +36,10 @@ const UI = {
     en: "A shared trip itinerary — built for planning, kept for the memories.",
     de: "Ein gemeinsamer Reiseplan — zur Planung erstellt, für die Erinnerung bewahrt.",
   },
+  copyright: {
+    en: "© {year} Adrian Blakey. All rights reserved. This site and its content — text, itinerary details and photos — are the author's own work, shared for personal, non-commercial viewing only. No part of it may be reproduced, republished or used for commercial purposes without prior written permission.",
+    de: "© {year} Adrian Blakey. Alle Rechte vorbehalten. Diese Website und ihre Inhalte — Texte, Reisedetails und Fotos — sind das eigene Werk des Autors und werden ausschließlich zur persönlichen, nicht-kommerziellen Ansicht bereitgestellt. Eine Vervielfältigung, Weiterveröffentlichung oder kommerzielle Nutzung ist ohne vorherige schriftliche Genehmigung nicht gestattet.",
+  },
   typePort: { en: "In port", de: "Im Hafen" },
   typeEmbark: { en: "Embark", de: "Einschiffung" },
   typeDisembark: { en: "Disembark", de: "Ausschiffung" },
@@ -117,7 +121,11 @@ function renderAll() {
   document.querySelector('.tab-btn[data-view="map"]').textContent = tr("tabMap");
   document.querySelector('.tab-btn[data-view="timeline"]').textContent = tr("tabTimeline");
   document.querySelector('.tab-btn[data-view="ship"]').textContent = tr("tabShip");
-  document.querySelector(".app-footer p").textContent = tr("footer");
+  document.getElementById("footer-tagline").textContent = tr("footer");
+  document.getElementById("footer-copyright").textContent = tr("copyright").replace(
+    "{year}",
+    String(new Date().getFullYear())
+  );
 
   buildFlightsLink();
   updateMapLabels();
@@ -153,7 +161,7 @@ function setupTabs() {
 }
 
 function buildMap() {
-  map = L.map("map", { scrollWheelZoom: true });
+  map = L.map("map", { scrollWheelZoom: true, zoomSnap: 0.25, zoomDelta: 0.5 });
 
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 18,
@@ -188,7 +196,7 @@ function buildMap() {
   });
 
   const bounds = L.latLngBounds(latlngs);
-  map.fitBounds(bounds, { padding: [40, 40] });
+  map.fitBounds(bounds, { padding: [10, 10] });
 }
 
 function updateMapLabels() {
@@ -250,7 +258,7 @@ function buildTimeline() {
     .map((day, index) => {
       const activityCount = (day.activities || []).length;
       const activitySuffix = activityCount
-        ? ` · ${activityCount} ${activityCount > 1 ? tr("excursions") : tr("excursion")}`
+        ? ` · <span class="excursion-link">${activityCount} ${activityCount > 1 ? tr("excursions") : tr("excursion")}</span>`
         : "";
       const typeKey = TYPE_LABEL_KEYS[day.type];
       return `

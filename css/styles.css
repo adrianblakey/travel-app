@@ -23,7 +23,13 @@ html, body {
   color: var(--color-ink);
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+}
+
 .app-header {
+  flex: 0 0 auto;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -108,7 +114,7 @@ html, body {
 }
 
 main {
-  height: calc(100vh - 130px);
+  flex: 1 1 auto;
   min-height: 480px;
 }
 
@@ -283,6 +289,14 @@ main {
   line-height: 1.4;
 }
 
+.excursion-link {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  color: var(--color-accent);
+}
+
+.timeline-item:hover .excursion-link { color: var(--color-ink); }
+
 .type-badge {
   display: inline-block;
   font-size: 0.7rem;
@@ -349,10 +363,21 @@ main {
 .ship-info a { color: var(--color-accent); }
 
 .app-footer {
+  flex: 0 0 auto;
   text-align: center;
   font-size: 0.8rem;
   color: var(--color-muted);
-  padding: 0.6rem;
+  padding: 0.6rem 1rem;
+}
+
+.app-footer p { margin: 0.15rem 0; }
+
+.footer-copyright {
+  font-size: 0.72rem;
+  color: #8a958f;
+  max-width: 720px;
+  margin-inline: auto;
+  line-height: 1.4;
 }
 
 /* Leaflet marker tweaks */
