@@ -160,7 +160,14 @@ whichever language is selected.
   `src` is cleared back to `about:blank` on close — see `toggleAisPanel()`.
   There's no free, keyless, static-site-friendly way to pull raw AIS data
   directly (that needs a backend or a paid API), so this embeds the one
-  provider that offers a free, no-signup embeddable map.
+  provider that offers a free, no-signup embeddable map. The panel is also
+  resizable — drag the small grip in its bottom-right corner (mouse or
+  touch, via Pointer Events; arrow keys when it's focused). The first
+  resize freezes it from its default centered position into an explicit
+  `top`/`left`/`width`/`height` box (see `setupAisResize()` in `js/app.js`);
+  the size floor (200×160px) lives only in that JS, not in CSS, so don't
+  reintroduce a `min-width`/`min-height` on `.ais-panel` — an earlier
+  version had one that silently overrode the JS floor with a larger value.
 
 To add a UI language beyond English/German, extend the `UI` dictionary and
 the `.lang-btn` markup in `index.html`; the app doesn't hardcode a

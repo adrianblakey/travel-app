@@ -326,6 +326,96 @@ document.getElementById("ais-close").addEventListener("click", () => {
   if (aisOpen) toggleAisPanel();
 });
 
+// The AIS panel starts centered via CSS (inset + margin:auto). The first
+// resize freezes it into an explicit top/left/width/height box (dropping
+// the CSS centering), then subsequent drags just adjust width/height —
+// same freeze-on-first-interaction approach as the legend's drag.
+function setupAisResize() {
+  const panel = document.getElementById("ais-panel");
+  const handle = document.getElementById("ais-resize-handle");
+  const container = document.getElementById("map");
+  const MIN_WIDTH = 200;
+  const MIN_HEIGHT = 160;
+  let resizing = false;
+  let startX = 0;
+  let startY = 0;
+  let startWidth = 0;
+  let startHeight = 0;
+  let startLeft = 0;
+  let startTop = 0;
+
+  function freezeBox() {
+    const rect = panel.getBoundingClientRect();
+    const mapRect = container.getBoundingClientRect();
+    const left = rect.left - mapRect.left;
+    const top = rect.top - mapRect.top;
+    panel.style.left = `${left}px`;
+    panel.style.top = `${top}px`;
+    panel.style.right = "auto";
+    panel.style.bottom = "auto";
+    panel.style.margin = "0";
+    panel.style.maxWidth = "none";
+    panel.style.maxHeight = "none";
+    panel.style.width = `${rect.width}px`;
+    panel.style.height = `${rect.height}px`;
+    return { left, top, width: rect.width, height: rect.height };
+  }
+
+  function resizeTo(width, height, left, top) {
+    const mapRect = container.getBoundingClientRect();
+    const maxWidth = mapRect.width - left - 8;
+    const maxHeight = mapRect.height - top - 8;
+    panel.style.width = `${Math.min(Math.max(width, MIN_WIDTH), maxWidth)}px`;
+    panel.style.height = `${Math.min(Math.max(height, MIN_HEIGHT), maxHeight)}px`;
+  }
+
+  handle.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const frozen = freezeBox();
+    resizing = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startWidth = frozen.width;
+    startHeight = frozen.height;
+    startLeft = frozen.left;
+    startTop = frozen.top;
+    handle.setPointerCapture(e.pointerId);
+  });
+
+  handle.addEventListener("pointermove", (e) => {
+    if (!resizing) return;
+    resizeTo(startWidth + (e.clientX - startX), startHeight + (e.clientY - startY), startLeft, startTop);
+  });
+
+  function endResize(e) {
+    if (!resizing) return;
+    resizing = false;
+    try {
+      handle.releasePointerCapture(e.pointerId);
+    } catch (err) {
+      /* already released */
+    }
+  }
+  handle.addEventListener("pointerup", endResize);
+  handle.addEventListener("pointercancel", endResize);
+
+  handle.addEventListener("keydown", (e) => {
+    const step = 20;
+    let dw = 0;
+    let dh = 0;
+    if (e.key === "ArrowRight") dw = step;
+    else if (e.key === "ArrowLeft") dw = -step;
+    else if (e.key === "ArrowDown") dh = step;
+    else if (e.key === "ArrowUp") dh = -step;
+    else return;
+    e.preventDefault();
+    const frozen = freezeBox();
+    resizeTo(frozen.width + dw, frozen.height + dh, frozen.left, frozen.top);
+  });
+}
+setupAisResize();
+
 function updateMapLabels() {
   trip.days.forEach((day, index) => {
     const marker = dayLayers[index];
