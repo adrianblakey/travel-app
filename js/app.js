@@ -332,6 +332,73 @@ document.getElementById("ais-close").addEventListener("click", () => {
 // resize freezes it into an explicit top/left/width/height box (dropping
 // the CSS centering), then subsequent drags just adjust width/height —
 // same freeze-on-first-interaction approach as the legend's drag.
+// Shared by drag and resize: converts the panel from its default CSS
+// centering (inset + margin:auto) into an explicit top/left/width/height
+// box, anchored at its current on-screen position, so either interaction
+// can adjust it from wherever it already is/whichever happens first.
+function freezeAisPanel() {
+  const panel = document.getElementById("ais-panel");
+  const container = document.getElementById("map");
+  const rect = panel.getBoundingClientRect();
+  const mapRect = container.getBoundingClientRect();
+  const left = rect.left - mapRect.left;
+  const top = rect.top - mapRect.top;
+  panel.style.left = `${left}px`;
+  panel.style.top = `${top}px`;
+  panel.style.right = "auto";
+  panel.style.bottom = "auto";
+  panel.style.margin = "0";
+  panel.style.maxWidth = "none";
+  panel.style.maxHeight = "none";
+  panel.style.width = `${rect.width}px`;
+  panel.style.height = `${rect.height}px`;
+  return { left, top, width: rect.width, height: rect.height };
+}
+
+function setupAisDrag() {
+  const panel = document.getElementById("ais-panel");
+  const header = document.querySelector(".ais-panel-header");
+  const container = document.getElementById("map");
+  let dragging = false;
+  let startX = 0;
+  let startY = 0;
+  let startLeft = 0;
+  let startTop = 0;
+
+  header.addEventListener("pointerdown", (e) => {
+    if (e.target.closest("#ais-close")) return; // let the close button work normally
+    const frozen = freezeAisPanel();
+    dragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startLeft = frozen.left;
+    startTop = frozen.top;
+    header.setPointerCapture(e.pointerId);
+  });
+
+  header.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const mapRect = container.getBoundingClientRect();
+    const maxLeft = Math.max(0, mapRect.width - panel.offsetWidth);
+    const maxTop = Math.max(0, mapRect.height - panel.offsetHeight);
+    panel.style.left = `${Math.min(Math.max(startLeft + (e.clientX - startX), 0), maxLeft)}px`;
+    panel.style.top = `${Math.min(Math.max(startTop + (e.clientY - startY), 0), maxTop)}px`;
+  });
+
+  function endDrag(e) {
+    if (!dragging) return;
+    dragging = false;
+    try {
+      header.releasePointerCapture(e.pointerId);
+    } catch (err) {
+      /* already released */
+    }
+  }
+  header.addEventListener("pointerup", endDrag);
+  header.addEventListener("pointercancel", endDrag);
+}
+setupAisDrag();
+
 function setupAisResize() {
   const panel = document.getElementById("ais-panel");
   const handle = document.getElementById("ais-resize-handle");
@@ -346,23 +413,6 @@ function setupAisResize() {
   let startLeft = 0;
   let startTop = 0;
 
-  function freezeBox() {
-    const rect = panel.getBoundingClientRect();
-    const mapRect = container.getBoundingClientRect();
-    const left = rect.left - mapRect.left;
-    const top = rect.top - mapRect.top;
-    panel.style.left = `${left}px`;
-    panel.style.top = `${top}px`;
-    panel.style.right = "auto";
-    panel.style.bottom = "auto";
-    panel.style.margin = "0";
-    panel.style.maxWidth = "none";
-    panel.style.maxHeight = "none";
-    panel.style.width = `${rect.width}px`;
-    panel.style.height = `${rect.height}px`;
-    return { left, top, width: rect.width, height: rect.height };
-  }
-
   function resizeTo(width, height, left, top) {
     const mapRect = container.getBoundingClientRect();
     const maxWidth = mapRect.width - left - 8;
@@ -374,7 +424,7 @@ function setupAisResize() {
   handle.addEventListener("pointerdown", (e) => {
     e.preventDefault();
     e.stopPropagation();
-    const frozen = freezeBox();
+    const frozen = freezeAisPanel();
     resizing = true;
     startX = e.clientX;
     startY = e.clientY;
@@ -412,7 +462,7 @@ function setupAisResize() {
     else if (e.key === "ArrowUp") dh = -step;
     else return;
     e.preventDefault();
-    const frozen = freezeBox();
+    const frozen = freezeAisPanel();
     resizeTo(frozen.width + dw, frozen.height + dh, frozen.left, frozen.top);
   });
 }
@@ -552,13 +602,13 @@ function advisoryLinksHtml(day) {
   if (!day.country) return "";
   const advisory = COUNTRY_ADVISORIES[day.country];
   if (!advisory) return "";
-  const links = [
-    `<a class="weather-link" href="${advisory.fcdo}" target="_blank" rel="noopener">🛂 ${tr("advisoryFcdo")}</a>`,
-  ];
-  if (advisory.aa) {
-    links.push(`<a class="weather-link" href="${advisory.aa}" target="_blank" rel="noopener">🛂 ${tr("advisoryAA")}</a>`);
-  }
-  return `<div class="weather-links">${links.join("")}</div>`;
+  // Show the advisory that matches the current UI language — German
+  // (Auswärtiges Amt) in German mode, falling back to FCDO where no AA
+  // page exists for that country (e.g. the Falklands).
+  const useAA = lang === "de" && advisory.aa;
+  const url = useAA ? advisory.aa : advisory.fcdo;
+  const labelKey = useAA ? "advisoryAA" : "advisoryFcdo";
+  return `<div class="weather-links"><a class="weather-link" href="${url}" target="_blank" rel="noopener">🛂 ${tr(labelKey)}</a></div>`;
 }
 
 function openDayPanel(index) {

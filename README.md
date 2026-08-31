@@ -148,26 +148,30 @@ whichever language is selected.
   (`windyUrl`, `wikipediaUrl`) rather than stored in the trip data. Sea and
   scenic-sailing days get a third link, a Windy "waves" layer, as a shipping
   forecast (`shippingForecastUrl`, gated by `SHIPPING_FORECAST_TYPES`).
-- **Travel advisories.** Days with a `country` field get links to the UK
-  FCDO and (where available) German Auswärtiges Amt advisory pages for that
-  country — see `COUNTRY_ADVISORIES` in `js/app.js`. Add a country there
-  before tagging a new day with it.
+- **Travel advisories.** Days with a `country` field get a link to that
+  country's official advisory page — UK FCDO in English, German
+  Auswärtiges Amt in German (falling back to FCDO where no AA page exists,
+  e.g. the Falklands) — see `COUNTRY_ADVISORIES` in `js/app.js`. Add a
+  country there before tagging a new day with it.
 - **Live ship traffic (AIS).** A 🛰 button (top-left, next to the zoom
-  controls) opens a panel embedding MarineTraffic's free live-AIS map,
-  centered on whichever day's detail panel is open (or the route's overall
-  center if none is). This is **click-to-load by design**: nothing from
-  marinetraffic.com is fetched until the button is pressed, and the iframe's
-  `src` is cleared back to `about:blank` on close — see `toggleAisPanel()`.
-  There's no free, keyless, static-site-friendly way to pull raw AIS data
-  directly (that needs a backend or a paid API), so this embeds the one
-  provider that offers a free, no-signup embeddable map. The panel is also
-  resizable — drag the small grip in its bottom-right corner (mouse or
-  touch, via Pointer Events; arrow keys when it's focused). The first
-  resize freezes it from its default centered position into an explicit
-  `top`/`left`/`width`/`height` box (see `setupAisResize()` in `js/app.js`);
-  the size floor (200×160px) lives only in that JS, not in CSS, so don't
-  reintroduce a `min-width`/`min-height` on `.ais-panel` — an earlier
-  version had one that silently overrode the JS floor with a larger value.
+  controls) opens a floating panel embedding MarineTraffic's free live-AIS
+  map, centered on whichever day's detail panel is open (or the route's
+  overall center if none is). This is **click-to-load by design**: nothing
+  from marinetraffic.com is fetched until the button is pressed, and the
+  iframe's `src` is cleared back to `about:blank` on close — see
+  `toggleAisPanel()`. There's no free, keyless, static-site-friendly way to
+  pull raw AIS data directly (that needs a backend or a paid API), so this
+  embeds the one provider that offers a free, no-signup embeddable map.
+  The panel is both **draggable** (by its header/title bar — `setupAisDrag()`)
+  and **resizable** (by the small grip in its bottom-right corner —
+  `setupAisResize()`), both via Pointer Events so mouse and touch work the
+  same way; resize also takes arrow keys when the grip is focused. Either
+  interaction, whichever happens first, freezes the panel from its default
+  CSS-centered position into an explicit `top`/`left`/`width`/`height` box
+  via the shared `freezeAisPanel()`. The resize floor (200×160px) lives
+  only in that JS, not in CSS — don't reintroduce a `min-width`/`min-height`
+  on `.ais-panel`; an earlier version had one that silently overrode the
+  JS floor with a larger value.
 
 To add a UI language beyond English/German, extend the `UI` dictionary and
 the `.lang-btn` markup in `index.html`; the app doesn't hardcode a
