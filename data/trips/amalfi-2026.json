@@ -87,9 +87,14 @@
       },
       "title": { "en": "Free day in Sorrento", "de": "Freier Tag in Sorrent" },
       "summary": {
-        "en": "A free day to relax at the hotel or explore Sorrento at your own pace — or join the optional full-day excursion to Capri (extra cost, minimum 15 participants).",
-        "de": "Ein freier Tag zur Erholung im Hotel oder zur eigenen Erkundung von Sorrent — oder Teilnahme am optionalen Ganztagesausflug nach Capri (gegen Aufpreis, mindestens 15 Teilnehmer)."
+        "en": "A free day to relax at the hotel or explore Sorrento at your own pace — or join the optional full-day excursion to Capri (extra cost, minimum 15 participants). Ischia is another easy day trip, by direct hydrofoil from Sorrento's Marina Piccola.",
+        "de": "Ein freier Tag zur Erholung im Hotel oder zur eigenen Erkundung von Sorrent — oder Teilnahme am optionalen Ganztagesausflug nach Capri (gegen Aufpreis, mindestens 15 Teilnehmer). Auch Ischia ist mit dem direkten Tragflügelboot ab der Marina Piccola in Sorrent gut als Tagesausflug erreichbar."
       },
+      "links": [
+        { "icon": "🚆", "label": { "en": "Train to Naples (EAV/Circumvesuviana timetables)", "de": "Zug nach Neapel (EAV/Circumvesuviana-Fahrplan)" }, "url": "https://www.eavsrl.it/orari-linee-ferroviarie/" },
+        { "icon": "⛴", "label": { "en": "Ferry to Ischia (Alilauro routes)", "de": "Fähre nach Ischia (Alilauro-Routen)" }, "url": "https://www.alilauro.it/en/tratte/" },
+        { "icon": "🚗", "label": { "en": "Car rental in Sorrento (Europcar)", "de": "Mietwagen in Sorrent (Europcar)" }, "url": "https://www.europcar.com/en-us/places/car-rental-italy/sorrento" }
+      ],
       "note": {
         "en": "Exact day within the week not yet confirmed — see the note on Day 1.",
         "de": "Genauer Tag innerhalb der Woche noch nicht bestätigt — siehe Hinweis bei Tag 1."
@@ -123,9 +128,14 @@
       },
       "title": { "en": "Free day in Sorrento", "de": "Freier Tag in Sorrent" },
       "summary": {
-        "en": "A free day to relax at the hotel or explore Sorrento at your own pace.",
-        "de": "Ein freier Tag zur Erholung im Hotel oder zur eigenen Erkundung von Sorrent."
+        "en": "A free day to relax at the hotel or explore Sorrento at your own pace — or take the Circumvesuviana train into Naples for the day.",
+        "de": "Ein freier Tag zur Erholung im Hotel oder zur eigenen Erkundung von Sorrent — oder mit der Circumvesuviana-Bahn für einen Tagesausflug nach Neapel."
       },
+      "links": [
+        { "icon": "🚆", "label": { "en": "Train to Naples (EAV/Circumvesuviana timetables)", "de": "Zug nach Neapel (EAV/Circumvesuviana-Fahrplan)" }, "url": "https://www.eavsrl.it/orari-linee-ferroviarie/" },
+        { "icon": "⛴", "label": { "en": "Ferry to Ischia (Alilauro routes)", "de": "Fähre nach Ischia (Alilauro-Routen)" }, "url": "https://www.alilauro.it/en/tratte/" },
+        { "icon": "🚗", "label": { "en": "Car rental in Sorrento (Europcar)", "de": "Mietwagen in Sorrent (Europcar)" }, "url": "https://www.europcar.com/en-us/places/car-rental-italy/sorrento" }
+      ],
       "note": {
         "en": "Exact day within the week not yet confirmed — see the note on Day 1.",
         "de": "Genauer Tag innerhalb der Woche noch nicht bestätigt — siehe Hinweis bei Tag 1."
@@ -141,9 +151,14 @@
       },
       "title": { "en": "Free day in Sorrento", "de": "Freier Tag in Sorrent" },
       "summary": {
-        "en": "A last free day to relax at the hotel or explore Sorrento at your own pace.",
-        "de": "Ein letzter freier Tag zur Erholung im Hotel oder zur eigenen Erkundung von Sorrent."
+        "en": "A last free day to relax at the hotel or explore Sorrento at your own pace — a rental car is also an option for exploring the peninsula independently.",
+        "de": "Ein letzter freier Tag zur Erholung im Hotel oder zur eigenen Erkundung von Sorrent — ein Mietwagen ist ebenfalls eine Option, um die Halbinsel selbstständig zu erkunden."
       },
+      "links": [
+        { "icon": "🚆", "label": { "en": "Train to Naples (EAV/Circumvesuviana timetables)", "de": "Zug nach Neapel (EAV/Circumvesuviana-Fahrplan)" }, "url": "https://www.eavsrl.it/orari-linee-ferroviarie/" },
+        { "icon": "⛴", "label": { "en": "Ferry to Ischia (Alilauro routes)", "de": "Fähre nach Ischia (Alilauro-Routen)" }, "url": "https://www.alilauro.it/en/tratte/" },
+        { "icon": "🚗", "label": { "en": "Car rental in Sorrento (Europcar)", "de": "Mietwagen in Sorrent (Europcar)" }, "url": "https://www.europcar.com/en-us/places/car-rental-italy/sorrento" }
+      ],
       "note": {
         "en": "Exact day within the week not yet confirmed — see the note on Day 1.",
         "de": "Genauer Tag innerhalb der Woche noch nicht bestätigt — siehe Hinweis bei Tag 1."

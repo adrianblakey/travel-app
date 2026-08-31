@@ -131,6 +131,19 @@ anything.
                                  // (js/app.js) — adds travel-advisory links to this
                                  // day. Omit for sea/scenic days where no border
                                  // is crossed.
+      "links": [                 // optional — curated links specific to this day
+                                 // (trains, ferries, car rental, anything worth
+                                 // pointing at from a free/flexible day). Unlike
+                                 // the weather/advisory links, these come straight
+                                 // from the trip data rather than being derived —
+                                 // verify each URL (e.g. `curl -o /dev/null -w
+                                 // '%{http_code}'`) before adding it.
+        {
+          "icon": "🚆",          // optional single emoji; falls back to 🔗
+          "label": { "en": "...", "de": "..." },
+          "url": "https://..."
+        }
+      ],
       "activities": [
         {
           "title": { "en": "...", "de": "..." },

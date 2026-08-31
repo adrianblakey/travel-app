@@ -1,5 +1,5 @@
 // Bump this by 1 with every commit that changes the app (shown in the footer).
-const APP_VERSION = 7;
+const APP_VERSION = 8;
 
 const TRIPS_INDEX_URL = "data/trips/index.json";
 
@@ -926,6 +926,18 @@ function advisoryLinksHtml(day) {
   return `<div class="weather-links"><a class="weather-link" href="${url}" target="_blank" rel="noopener">🛂 ${tr(labelKey)}</a></div>`;
 }
 
+// Optional curated links for this specific day — trains, ferries, car
+// rental, or anything else worth pointing at from a free/flexible day.
+// Unlike the weather/advisory links above these aren't derived from
+// location, so the trip data supplies the URL directly.
+function dayLinksHtml(day) {
+  if (!day.links || !day.links.length) return "";
+  const links = day.links
+    .map((l) => `<a class="weather-link" href="${l.url}" target="_blank" rel="noopener">${l.icon || "🔗"} ${escapeHtml(t(l.label))}</a>`)
+    .join("");
+  return `<div class="weather-links">${links}</div>`;
+}
+
 function nightsLabel(day) {
   // `endDate` marks the last night spent, not a checkout date, so the
   // number of nights equals the count of calendar dates the entry spans
@@ -984,6 +996,7 @@ function openDayPanel(index) {
     ${day.note ? `<p class="day-note">${escapeHtml(t(day.note))}</p>` : ""}
     ${weatherLinksHtml(day)}
     ${advisoryLinksHtml(day)}
+    ${dayLinksHtml(day)}
     ${activitiesHtml}
   `;
 
