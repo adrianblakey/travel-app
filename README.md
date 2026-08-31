@@ -64,6 +64,13 @@ anything.
   "travelers": ["First name", "..."],
   "flights": { "label": { "en": "...", "de": "..." }, "url": "..." },  // optional
   "vessel": { ... },            // optional — omit for non-cruise trips
+  "stateroom": {                // optional — cruise-specific, rendered on the Ship tab
+    "category": "PV3 — Penthouse Veranda",  // plain string, Viking's own product name
+    "cabinNumber": null,        // set once known; shows "to be assigned" while null
+    "typicalDeck": "Deck 4",
+    "deckPlanUrl": "https://...",  // link to the official deck plan PDF
+    "note": { "en": "...", "de": "..." }
+  },
   "days": [
     {
       "date": "YYYY-MM-DD",
@@ -88,6 +95,10 @@ anything.
       },
       "showFlights": true,      // optional — surfaces the flights link on this day
       "note": { "en": "...", "de": "..." },  // optional — small italic caveat shown under the day's detail, e.g. flagging content that was inferred rather than taken verbatim from a booking document
+      "country": "peru",        // optional plain string key into COUNTRY_ADVISORIES
+                                 // (js/app.js) — adds travel-advisory links to this
+                                 // day. Omit for sea/scenic days where no border
+                                 // is crossed.
       "activities": [
         {
           "title": { "en": "...", "de": "..." },
@@ -126,7 +137,22 @@ whichever language is selected.
   straight from `location.lat`/`lon` (always resolves, since it needs no
   place-name lookup), and a Wikipedia link for climate/seasonal context
   (see `weatherQuery` above). Both are computed in `js/app.js`
-  (`windyUrl`, `wikipediaUrl`) rather than stored in the trip data.
+  (`windyUrl`, `wikipediaUrl`) rather than stored in the trip data. Sea and
+  scenic-sailing days get a third link, a Windy "waves" layer, as a shipping
+  forecast (`shippingForecastUrl`, gated by `SHIPPING_FORECAST_TYPES`).
+- **Travel advisories.** Days with a `country` field get links to the UK
+  FCDO and (where available) German Auswärtiges Amt advisory pages for that
+  country — see `COUNTRY_ADVISORIES` in `js/app.js`. Add a country there
+  before tagging a new day with it.
+- **Live ship traffic (AIS).** A 🛰 button (top-left, next to the zoom
+  controls) opens a panel embedding MarineTraffic's free live-AIS map,
+  centered on whichever day's detail panel is open (or the route's overall
+  center if none is). This is **click-to-load by design**: nothing from
+  marinetraffic.com is fetched until the button is pressed, and the iframe's
+  `src` is cleared back to `about:blank` on close — see `toggleAisPanel()`.
+  There's no free, keyless, static-site-friendly way to pull raw AIS data
+  directly (that needs a backend or a paid API), so this embeds the one
+  provider that offers a free, no-signup embeddable map.
 
 To add a UI language beyond English/German, extend the `UI` dictionary and
 the `.lang-btn` markup in `index.html`; the app doesn't hardcode a
@@ -145,3 +171,32 @@ dates, excursion descriptions) goes into `data/trips/*.json`, and only first
 names are used for travelers. Keep it that way for any trip you add: no
 addresses, phone numbers, booking/confirmation numbers, or payment details in
 committed files.
+
+### Keeping the site out of search engines & social platforms
+
+`robots.txt` (`Disallow: /`) and a `<meta name="robots" content="noindex, ...">`
+tag in `index.html` ask crawlers not to index the site or generate link
+previews. This is **honesty-based, not access control**: well-behaved bots
+(Google, Bing, Facebook's/Instagram's preview crawlers) respect it, so the
+site won't turn up in search results or generate a rich card when a link is
+shared — but plain GitHub Pages has no real authentication, so anyone who has
+the direct URL can still open it. That's presumably fine for a link only
+shared with family and friends; if it ever needs actual access control
+(a login, a password that isn't just decorative), that means moving off
+plain GitHub Pages to something with real auth in front of it (e.g.
+Cloudflare Access) — a bigger change, not done here.
+
+### Cookies
+
+No cookie-consent banner is included, and none is needed for the site as it
+stands: no cookies or tracking are set by the app's own code, the one piece
+of browser storage (`tripLang`, remembering the language toggle) is
+strictly-necessary/functional and exempt from consent requirements under
+GDPR/ePrivacy guidance, and third-party sites (Windy, Wikipedia, hotels,
+advisories, MarineTraffic) are only ever reached by the visitor clicking an
+outbound link — nothing from them loads inside this page. The one exception,
+the AIS panel's MarineTraffic embed, is deliberately click-to-load (see
+above) specifically so it never fires without an explicit action, which
+keeps it out of "requires a consent banner" territory. If a future addition
+embeds third-party content automatically (analytics, ads, an always-on
+embed), revisit this.

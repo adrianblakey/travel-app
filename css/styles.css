@@ -466,3 +466,61 @@ main {
   background: var(--color-accent);
   color: #fff;
 }
+
+/* AIS ships panel */
+.ais-control a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  text-decoration: none;
+  background: #fff;
+  color: var(--color-ink);
+}
+
+.ais-control a:hover { background: var(--color-accent-soft); }
+.ais-control a.active { background: var(--color-accent); }
+
+.ais-panel {
+  position: absolute;
+  inset: 0.75rem;
+  z-index: 1400;
+  background: var(--color-surface);
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(20, 30, 25, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ais-panel.hidden { display: none; }
+
+.ais-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.95rem;
+}
+
+.ais-panel-header .panel-close {
+  position: static;
+  float: none;
+}
+
+.ais-note {
+  margin: 0;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.74rem;
+  color: var(--color-muted);
+  background: var(--color-accent-soft);
+}
+
+#ais-iframe {
+  flex: 1;
+  width: 100%;
+  border: 0;
+}

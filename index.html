@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <title>Our Trip</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
   <link rel="stylesheet" href="css/styles.css" />
@@ -33,6 +34,14 @@
         <button id="day-panel-close" class="panel-close" aria-label="Close">&times;</button>
         <div id="day-panel-content"></div>
       </aside>
+      <div id="ais-panel" class="ais-panel hidden">
+        <div class="ais-panel-header">
+          <strong id="ais-panel-title">Live ship traffic</strong>
+          <button id="ais-close" class="panel-close" aria-label="Close">&times;</button>
+        </div>
+        <p id="ais-privacy-note" class="ais-note"></p>
+        <iframe id="ais-iframe" title="Live ship traffic (MarineTraffic)" loading="lazy"></iframe>
+      </div>
     </section>
 
     <section id="view-timeline" class="view">

@@ -16,6 +16,16 @@
     "label": { "en": "Flight itinerary", "de": "Flugplan" },
     "url": "https://expe.onelink.me/hnLd/vfxckj9t"
   },
+  "stateroom": {
+    "category": "PV3 — Penthouse Veranda",
+    "cabinNumber": null,
+    "typicalDeck": "Deck 4",
+    "deckPlanUrl": "https://aem-prod-publish.viking.com/content/dam/vikingcruises/en/magnolia-images/ocean/ships/deck_plan/2024-OC-deckplans-webPDF-R1.pdf",
+    "note": {
+      "en": "Booked as a guaranty (GTY) cabin — Viking assigns the exact cabin number closer to sailing. PV3 Penthouse Veranda cabins are generally located on Deck 4; this page will be updated with the exact cabin once it's assigned.",
+      "de": "Als Garantie-Kabine (GTY) gebucht — Viking weist die genaue Kabinennummer erst näher am Reisetermin zu. PV3-Penthouse-Veranda-Kabinen befinden sich in der Regel auf Deck 4; diese Seite wird aktualisiert, sobald die genaue Kabine feststeht."
+    }
+  },
   "vessel": {
     "name": "Viking Jupiter",
     "operator": "Viking Ocean Cruises",
@@ -65,6 +75,7 @@
     {
       "date": "2027-01-17",
       "type": "hotel",
+      "country": "peru",
       "location": {
         "lat": -12.0464, "lon": -77.0428,
         "name": { "en": "Lima, Peru", "de": "Lima, Peru" }
@@ -83,6 +94,7 @@
     {
       "date": "2027-01-18",
       "type": "hotel",
+      "country": "peru",
       "location": {
         "lat": -13.3057, "lon": -72.1147,
         "name": { "en": "Urubamba, Sacred Valley, Peru", "de": "Urubamba, Heiliges Tal, Peru" }
@@ -100,6 +112,7 @@
     {
       "date": "2027-01-19",
       "type": "excursion",
+      "country": "peru",
       "location": {
         "lat": -13.1631, "lon": -72.5450,
         "name": { "en": "Machu Picchu, Peru", "de": "Machu Picchu, Peru" }
@@ -121,6 +134,7 @@
     {
       "date": "2027-01-20",
       "type": "hotel",
+      "country": "peru",
       "location": {
         "lat": -13.5319, "lon": -71.9675,
         "name": { "en": "Cusco, Peru", "de": "Cusco, Peru" }
@@ -138,6 +152,7 @@
     {
       "date": "2027-01-22",
       "type": "embark",
+      "country": "chile",
       "location": {
         "lat": -33.0472, "lon": -71.6127,
         "name": { "en": "Santiago (Valparaíso), Chile", "de": "Santiago (Valparaíso), Chile" },
@@ -152,6 +167,7 @@
     {
       "date": "2027-01-23",
       "type": "port",
+      "country": "chile",
       "location": {
         "lat": -33.0472, "lon": -71.6127,
         "name": { "en": "Santiago (Valparaíso), Chile", "de": "Santiago (Valparaíso), Chile" },
@@ -192,6 +208,7 @@
     {
       "date": "2027-01-25",
       "type": "port",
+      "country": "chile",
       "location": {
         "lat": -41.4693, "lon": -72.9424,
         "name": { "en": "Puerto Montt, Chile", "de": "Puerto Montt, Chile" }
@@ -246,6 +263,7 @@
     {
       "date": "2027-01-28",
       "type": "port",
+      "country": "chile",
       "location": {
         "lat": -53.1638, "lon": -70.9171,
         "name": { "en": "Punta Arenas, Chile", "de": "Punta Arenas, Chile" }
@@ -273,6 +291,7 @@
     {
       "date": "2027-01-29",
       "type": "port",
+      "country": "argentina",
       "location": {
         "lat": -54.8019, "lon": -68.3030,
         "name": { "en": "Ushuaia, Argentina", "de": "Ushuaia, Argentinien" }
@@ -336,6 +355,7 @@
     {
       "date": "2027-02-01",
       "type": "port",
+      "country": "falklands",
       "location": {
         "lat": -51.6961, "lon": -57.8514,
         "name": { "en": "Port Stanley, Falkland Islands", "de": "Port Stanley, Falklandinseln" }
@@ -376,6 +396,7 @@
     {
       "date": "2027-02-03",
       "type": "port",
+      "country": "argentina",
       "location": {
         "lat": -42.7692, "lon": -65.0385,
         "name": { "en": "Puerto Madryn, Argentina", "de": "Puerto Madryn, Argentinien" }
@@ -429,6 +450,7 @@
     {
       "date": "2027-02-06",
       "type": "port",
+      "country": "uruguay",
       "location": {
         "lat": -34.9011, "lon": -56.1645,
         "name": { "en": "Montevideo, Uruguay", "de": "Montevideo, Uruguay" }
@@ -466,6 +488,7 @@
     {
       "date": "2027-02-07",
       "type": "port",
+      "country": "argentina",
       "location": {
         "lat": -34.6037, "lon": -58.3816,
         "name": { "en": "Buenos Aires, Argentina", "de": "Buenos Aires, Argentinien" }
@@ -502,6 +525,7 @@
     {
       "date": "2027-02-08",
       "type": "disembark",
+      "country": "argentina",
       "location": {
         "lat": -34.6037, "lon": -58.3816,
         "name": { "en": "Buenos Aires, Argentina", "de": "Buenos Aires, Argentinien" }

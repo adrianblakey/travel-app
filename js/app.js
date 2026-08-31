@@ -56,6 +56,22 @@ const UI = {
   legendExcursion: { en: "Excursion", de: "Ausflug" },
   weatherNow: { en: "Current & forecast (Windy)", de: "Aktuell & Vorhersage (Windy)" },
   weatherTypical: { en: "Climate & typical weather (Wikipedia)", de: "Klima & typisches Wetter (Wikipedia)" },
+  shippingForecast: { en: "Shipping forecast — waves (Windy)", de: "Seewetterbericht — Wellen (Windy)" },
+  advisoryFcdo: { en: "UK travel advice (FCDO)", de: "Reisehinweise (FCDO, UK)" },
+  advisoryAA: { en: "German travel advice (Auswärtiges Amt)", de: "Reisehinweise (Auswärtiges Amt)" },
+  ourStateroom: { en: "Our Stateroom", de: "Unsere Kabine" },
+  stateroomCategory: { en: "Category", de: "Kategorie" },
+  stateroomCabin: { en: "Cabin number", de: "Kabinennummer" },
+  stateroomCabinTbd: { en: "To be assigned", de: "Wird noch zugeteilt" },
+  stateroomDeck: { en: "Typical deck for this category", de: "Übliches Deck für diese Kategorie" },
+  deckPlanLink: { en: "View deck plan (PDF) →", de: "Deckplan ansehen (PDF) →" },
+  aisToggleTitle: { en: "Show nearby ships (AIS)", de: "Schiffe in der Nähe zeigen (AIS)" },
+  aisPanelTitle: { en: "Live ship traffic", de: "Live-Schiffsverkehr" },
+  aisPrivacyNote: {
+    en: "Loads a live map from marinetraffic.com (third party) only while this panel is open — nothing is loaded until you open it.",
+    de: "Lädt eine Live-Karte von marinetraffic.com (Drittanbieter) nur, solange dieses Fenster geöffnet ist — es wird nichts geladen, bevor Sie es öffnen.",
+  },
+  aisClose: { en: "Close", de: "Schließen" },
 };
 
 const TYPE_LABEL_KEYS = {
@@ -76,6 +92,23 @@ const LEGEND_ITEMS = [
   { color: TYPE_COLORS.scenic, key: "legendScenic" },
   { color: TYPE_COLORS.sea, key: "legendSea" },
 ];
+
+// Official government travel-advisory pages, keyed by the `country` field on
+// a day. Only real ashore/entry days carry a `country` — sea/scenic days
+// don't, since no border is crossed. `aa` (Auswärtiges Amt) is left out
+// where no dedicated country page exists (e.g. the Falklands, a UK
+// territory not covered separately by the German Foreign Office).
+const COUNTRY_ADVISORIES = {
+  peru: { fcdo: "https://www.gov.uk/foreign-travel-advice/peru", aa: "https://www.auswaertiges-amt.de/de/service/laender/peru-node" },
+  chile: { fcdo: "https://www.gov.uk/foreign-travel-advice/chile", aa: "https://www.auswaertiges-amt.de/de/service/laender/chile-node" },
+  argentina: { fcdo: "https://www.gov.uk/foreign-travel-advice/argentina", aa: "https://www.auswaertiges-amt.de/de/service/laender/argentinien-node" },
+  uruguay: { fcdo: "https://www.gov.uk/foreign-travel-advice/uruguay", aa: "https://www.auswaertiges-amt.de/de/service/laender/uruguay-node" },
+  falklands: { fcdo: "https://www.gov.uk/foreign-travel-advice/falkland-islands", aa: null },
+};
+
+// Windy's waves layer is offered as a "shipping forecast" for days actually
+// spent at sea or sailing scenic waters — not for days ashore.
+const SHIPPING_FORECAST_TYPES = new Set(["sea", "scenic"]);
 
 let trip = null;
 let map = null;
@@ -150,10 +183,18 @@ function renderAll() {
   buildLegend();
   buildTimeline();
   buildShipInfo();
+  updateAisLabels();
 
   if (openPanelIndex !== null) {
     openDayPanel(openPanelIndex);
   }
+}
+
+function updateAisLabels() {
+  document.getElementById("ais-panel-title").textContent = tr("aisPanelTitle");
+  document.getElementById("ais-privacy-note").textContent = tr("aisPrivacyNote");
+  const toggleLink = document.getElementById("ais-toggle-link");
+  if (toggleLink) toggleLink.title = tr("aisToggleTitle");
 }
 
 function buildFlightsLink() {
@@ -235,7 +276,58 @@ function buildMap() {
 
   const bounds = L.latLngBounds(latlngs);
   map.fitBounds(bounds, { padding: [10, 10] });
+
+  addAisControl();
 }
+
+function addAisControl() {
+  const control = L.control({ position: "topleft" });
+  control.onAdd = function () {
+    const div = L.DomUtil.create("div", "leaflet-bar ais-control");
+    div.innerHTML = `<a href="#" id="ais-toggle-link" role="button" title="${tr("aisToggleTitle")}">🛰</a>`;
+    L.DomEvent.disableClickPropagation(div);
+    L.DomEvent.on(div, "click", (e) => {
+      e.preventDefault();
+      toggleAisPanel();
+    });
+    return div;
+  };
+  control.addTo(map);
+}
+
+let aisOpen = false;
+
+function aisCenter() {
+  if (openPanelIndex !== null) {
+    const d = trip.days[openPanelIndex];
+    return { lat: d.location.lat, lon: d.location.lon };
+  }
+  const bounds = L.latLngBounds(trip.days.map((d) => [d.location.lat, d.location.lon]));
+  const c = bounds.getCenter();
+  return { lat: c.lat, lon: c.lng };
+}
+
+function toggleAisPanel() {
+  aisOpen = !aisOpen;
+  const panel = document.getElementById("ais-panel");
+  const iframe = document.getElementById("ais-iframe");
+  const toggleLink = document.getElementById("ais-toggle-link");
+
+  if (aisOpen) {
+    const center = aisCenter();
+    iframe.src = `https://www.marinetraffic.com/en/ais/embed/zoom:7/centery:${center.lat.toFixed(2)}/centerx:${center.lon.toFixed(2)}/maptype:4/shownames:false`;
+    panel.classList.remove("hidden");
+    if (toggleLink) toggleLink.classList.add("active");
+  } else {
+    iframe.src = "about:blank"; // stop loading the third-party embed once closed
+    panel.classList.add("hidden");
+    if (toggleLink) toggleLink.classList.remove("active");
+  }
+}
+
+document.getElementById("ais-close").addEventListener("click", () => {
+  if (aisOpen) toggleAisPanel();
+});
 
 function updateMapLabels() {
   trip.days.forEach((day, index) => {
@@ -274,11 +366,33 @@ function wikipediaUrl(day) {
   return `https://en.wikipedia.org/wiki/${encodeURIComponent(query.replace(/\s+/g, "_"))}`;
 }
 
+function shippingForecastUrl(day) {
+  return `https://www.windy.com/-Waves-waves?waves,${day.location.lat.toFixed(3)},${day.location.lon.toFixed(3)},7`;
+}
+
 function weatherLinksHtml(day) {
   const links = [
     `<a class="weather-link" href="${windyUrl(day)}" target="_blank" rel="noopener">🌬 ${tr("weatherNow")}</a>`,
     `<a class="weather-link" href="${wikipediaUrl(day)}" target="_blank" rel="noopener">📖 ${tr("weatherTypical")}</a>`,
   ];
+  if (SHIPPING_FORECAST_TYPES.has(day.type)) {
+    links.push(
+      `<a class="weather-link" href="${shippingForecastUrl(day)}" target="_blank" rel="noopener">⚓ ${tr("shippingForecast")}</a>`
+    );
+  }
+  return `<div class="weather-links">${links.join("")}</div>`;
+}
+
+function advisoryLinksHtml(day) {
+  if (!day.country) return "";
+  const advisory = COUNTRY_ADVISORIES[day.country];
+  if (!advisory) return "";
+  const links = [
+    `<a class="weather-link" href="${advisory.fcdo}" target="_blank" rel="noopener">🛂 ${tr("advisoryFcdo")}</a>`,
+  ];
+  if (advisory.aa) {
+    links.push(`<a class="weather-link" href="${advisory.aa}" target="_blank" rel="noopener">🛂 ${tr("advisoryAA")}</a>`);
+  }
   return `<div class="weather-links">${links.join("")}</div>`;
 }
 
@@ -319,6 +433,7 @@ function openDayPanel(index) {
     ${day.showFlights && trip.flights ? `<p class="lodging-note"><a href="${trip.flights.url}" target="_blank" rel="noopener">✈ ${escapeHtml(trip.flights.label ? t(trip.flights.label) : tr("flightsFallback"))} &rarr;</a></p>` : ""}
     ${day.note ? `<p class="day-note">${escapeHtml(t(day.note))}</p>` : ""}
     ${weatherLinksHtml(day)}
+    ${advisoryLinksHtml(day)}
     ${activitiesHtml}
   `;
 
@@ -386,6 +501,22 @@ function buildShipInfo() {
     <ul>${v.highlights.map((h) => `<li>${escapeHtml(t(h))}</li>`).join("")}</ul>
     <p><a href="${v.moreInfoUrl}" target="_blank" rel="noopener">${tr("moreInfo")}</a></p>
     <p class="source-note">${escapeHtml(t(v.sourceNote))}</p>
+    ${stateroomHtml()}
+  `;
+}
+
+function stateroomHtml() {
+  const s = trip.stateroom;
+  if (!s) return "";
+  return `
+    <h3>${tr("ourStateroom")}</h3>
+    <div class="ship-stats">
+      <div class="stat-card"><div class="stat-value">${escapeHtml(s.category)}</div><div class="stat-label">${tr("stateroomCategory")}</div></div>
+      <div class="stat-card"><div class="stat-value">${s.cabinNumber ? escapeHtml(s.cabinNumber) : tr("stateroomCabinTbd")}</div><div class="stat-label">${tr("stateroomCabin")}</div></div>
+      <div class="stat-card"><div class="stat-value">${escapeHtml(s.typicalDeck)}</div><div class="stat-label">${tr("stateroomDeck")}</div></div>
+    </div>
+    ${s.note ? `<p class="source-note">${escapeHtml(t(s.note))}</p>` : ""}
+    ${s.deckPlanUrl ? `<p><a href="${s.deckPlanUrl}" target="_blank" rel="noopener">${tr("deckPlanLink")}</a></p>` : ""}
   `;
 }
 
