@@ -10,19 +10,63 @@ const TYPE_COLORS = {
   transfer: "#b5793a",
 };
 
-const TYPE_LABELS = {
-  port: "In port",
-  embark: "Embark",
-  disembark: "Disembark",
-  sea: "At sea",
-  scenic: "Scenic sailing",
-  hotel: "On land",
-  transfer: "Transfer",
+const UI = {
+  appTitle: { en: "Our Trip", de: "Unsere Reise" },
+  loading: { en: "Loading trip…", de: "Reise wird geladen…" },
+  tabMap: { en: "Route Map", de: "Karte" },
+  tabTimeline: { en: "Day by Day", de: "Tag für Tag" },
+  tabShip: { en: "The Ship", de: "Das Schiff" },
+  flightsFallback: { en: "Flights", de: "Flüge" },
+  arrive: { en: "Arrive", de: "Ankunft" },
+  depart: { en: "Depart", de: "Abfahrt" },
+  stayingAt: { en: "Staying at:", de: "Unterkunft:" },
+  excursion: { en: "excursion", de: "Ausflug" },
+  excursions: { en: "excursions", de: "Ausflüge" },
+  highlights: { en: "Highlights", de: "Highlights" },
+  moreInfo: { en: "More on viking.com →", de: "Mehr auf viking.com →" },
+  guests: { en: "Guests", de: "Gäste" },
+  crew: { en: "Crew", de: "Besatzung" },
+  staterooms: { en: "Staterooms", de: "Kabinen" },
+  decks: { en: "Decks", de: "Decks" },
+  length: { en: "Length", de: "Länge" },
+  beam: { en: "Beam", de: "Breite" },
+  grossTonnage: { en: "Gross tonnage", de: "Bruttoraumzahl" },
+  cruisingSpeed: { en: "Cruising speed", de: "Reisegeschwindigkeit" },
+  footer: {
+    en: "A shared trip itinerary — built for planning, kept for the memories.",
+    de: "Ein gemeinsamer Reiseplan — zur Planung erstellt, für die Erinnerung bewahrt.",
+  },
+  typePort: { en: "In port", de: "Im Hafen" },
+  typeEmbark: { en: "Embark", de: "Einschiffung" },
+  typeDisembark: { en: "Disembark", de: "Ausschiffung" },
+  typeSea: { en: "At sea", de: "Auf See" },
+  typeScenic: { en: "Scenic sailing", de: "Landschaftliche Fahrt" },
+  typeHotel: { en: "On land", de: "An Land" },
+  typeTransfer: { en: "Transfer", de: "Transfer" },
+};
+
+const TYPE_LABEL_KEYS = {
+  port: "typePort",
+  embark: "typeEmbark",
+  disembark: "typeDisembark",
+  sea: "typeSea",
+  scenic: "typeScenic",
+  hotel: "typeHotel",
+  transfer: "typeTransfer",
 };
 
 let trip = null;
 let map = null;
 let dayLayers = [];
+let openPanelIndex = null;
+let lang = "en";
+
+try {
+  const saved = localStorage.getItem("tripLang");
+  if (saved === "en" || saved === "de") lang = saved;
+} catch (e) {
+  /* localStorage unavailable — default to English */
+}
 
 init();
 
@@ -30,22 +74,66 @@ async function init() {
   const res = await fetch(TRIP_URL);
   trip = await res.json();
 
-  document.getElementById("trip-title").textContent = trip.title;
-  document.getElementById("trip-subtitle").textContent =
-    `${trip.subtitle} · ${formatDateRange(trip.startDate, trip.endDate)}`;
-
-  buildFlightsLink();
+  setupLangToggle();
   setupTabs();
   buildMap();
+  renderAll();
+}
+
+function tr(key) {
+  return (UI[key] && UI[key][lang]) || (UI[key] && UI[key].en) || "";
+}
+
+function t(field) {
+  if (field === null || field === undefined) return "";
+  if (typeof field === "string") return field;
+  return field[lang] ?? field.en ?? "";
+}
+
+function setupLangToggle() {
+  document.querySelectorAll(".lang-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.lang === lang);
+    btn.addEventListener("click", () => {
+      if (btn.dataset.lang === lang) return;
+      lang = btn.dataset.lang;
+      try {
+        localStorage.setItem("tripLang", lang);
+      } catch (e) {
+        /* ignore persistence failures */
+      }
+      document.querySelectorAll(".lang-btn").forEach((b) => b.classList.toggle("active", b.dataset.lang === lang));
+      renderAll();
+    });
+  });
+}
+
+function renderAll() {
+  document.documentElement.lang = lang;
+  document.title = tr("appTitle");
+  document.getElementById("trip-title").textContent = t(trip.title);
+  document.getElementById("trip-subtitle").textContent =
+    `${t(trip.subtitle)} · ${formatDateRange(trip.startDate, trip.endDate)}`;
+
+  document.querySelector('.tab-btn[data-view="map"]').textContent = tr("tabMap");
+  document.querySelector('.tab-btn[data-view="timeline"]').textContent = tr("tabTimeline");
+  document.querySelector('.tab-btn[data-view="ship"]').textContent = tr("tabShip");
+  document.querySelector(".app-footer p").textContent = tr("footer");
+
+  buildFlightsLink();
+  updateMapLabels();
   buildTimeline();
   buildShipInfo();
+
+  if (openPanelIndex !== null) {
+    openDayPanel(openPanelIndex);
+  }
 }
 
 function buildFlightsLink() {
-  if (!trip.flights || !trip.flights.url) return;
   const link = document.getElementById("flights-link");
+  if (!trip.flights || !trip.flights.url) return;
   link.href = trip.flights.url;
-  link.textContent = `✈ ${trip.flights.label || "Flights"}`;
+  link.textContent = `✈ ${trip.flights.label ? t(trip.flights.label) : tr("flightsFallback")}`;
   link.hidden = false;
 }
 
@@ -94,7 +182,7 @@ function buildMap() {
       className: "trip-marker",
     }).addTo(map);
 
-    marker.bindTooltip(`${shortDate(day.date)} — ${day.title}`, { direction: "top", offset: [0, -6] });
+    marker.bindTooltip("", { direction: "top", offset: [0, -6] });
     marker.on("click", () => openDayPanel(index));
     dayLayers.push(marker);
   });
@@ -103,38 +191,48 @@ function buildMap() {
   map.fitBounds(bounds, { padding: [40, 40] });
 }
 
+function updateMapLabels() {
+  trip.days.forEach((day, index) => {
+    const marker = dayLayers[index];
+    marker.setTooltipContent(`${shortDate(day.date)} — ${t(day.title)}`);
+  });
+}
+
 function openDayPanel(index) {
+  openPanelIndex = index;
   const day = trip.days[index];
   const panel = document.getElementById("day-panel");
   const content = document.getElementById("day-panel-content");
 
   const timesHtml = [];
-  if (day.arrival) timesHtml.push(`<span>Arrive ${day.arrival}</span>`);
-  if (day.departure) timesHtml.push(`<span>Depart ${day.departure}</span>`);
+  if (day.arrival) timesHtml.push(`<span>${tr("arrive")} ${day.arrival}</span>`);
+  if (day.departure) timesHtml.push(`<span>${tr("depart")} ${day.departure}</span>`);
 
   const activitiesHtml = (day.activities || [])
     .map(
       (a) => `
       <div class="activity-card">
-        <h3>${escapeHtml(a.title)}</h3>
-        <p class="activity-meta">${escapeHtml(a.duration)} · ${escapeHtml(a.time)}
+        <h3>${escapeHtml(t(a.title))}</h3>
+        <p class="activity-meta">${escapeHtml(t(a.duration))} · ${escapeHtml(t(a.time))}
           <span class="activity-travelers">${(a.travelers || [])
-            .map((t) => `<span class="chip">${escapeHtml(t)}</span>`)
+            .map((tv) => `<span class="chip">${escapeHtml(tv)}</span>`)
             .join("")}</span>
         </p>
-        <p>${escapeHtml(a.description)}</p>
+        <p>${escapeHtml(t(a.description))}</p>
       </div>`
     )
     .join("");
 
+  const typeKey = TYPE_LABEL_KEYS[day.type];
+
   content.innerHTML = `
-    <span class="type-badge type-${day.type}">${TYPE_LABELS[day.type] || day.type}</span>
-    <h2>${escapeHtml(day.title)}</h2>
-    <p class="panel-date">${formatDate(day.date)} (${day.day}) · ${escapeHtml(day.location.name)}</p>
+    <span class="type-badge type-${day.type}">${typeKey ? tr(typeKey) : day.type}</span>
+    <h2>${escapeHtml(t(day.title))}</h2>
+    <p class="panel-date">${formatDate(day.date)} · ${escapeHtml(t(day.location.name))}</p>
     ${timesHtml.length ? `<div class="panel-times">${timesHtml.join("")}</div>` : ""}
-    <p class="panel-summary">${escapeHtml(day.summary)}</p>
-    ${day.lodging ? `<p class="lodging-note">Staying at: ${escapeHtml(day.lodging)}</p>` : ""}
-    ${day.showFlights && trip.flights ? `<p class="lodging-note"><a href="${trip.flights.url}" target="_blank" rel="noopener">✈ ${escapeHtml(trip.flights.label || "Flight itinerary")} &rarr;</a></p>` : ""}
+    <p class="panel-summary">${escapeHtml(t(day.summary))}</p>
+    ${day.lodging ? `<p class="lodging-note">${tr("stayingAt")} ${escapeHtml(day.lodging)}</p>` : ""}
+    ${day.showFlights && trip.flights ? `<p class="lodging-note"><a href="${trip.flights.url}" target="_blank" rel="noopener">✈ ${escapeHtml(trip.flights.label ? t(trip.flights.label) : tr("flightsFallback"))} &rarr;</a></p>` : ""}
     ${activitiesHtml}
   `;
 
@@ -143,6 +241,7 @@ function openDayPanel(index) {
 
 document.getElementById("day-panel-close").addEventListener("click", () => {
   document.getElementById("day-panel").classList.add("hidden");
+  openPanelIndex = null;
 });
 
 function buildTimeline() {
@@ -151,18 +250,19 @@ function buildTimeline() {
     .map((day, index) => {
       const activityCount = (day.activities || []).length;
       const activitySuffix = activityCount
-        ? ` · ${activityCount} excursion${activityCount > 1 ? "s" : ""}`
+        ? ` · ${activityCount} ${activityCount > 1 ? tr("excursions") : tr("excursion")}`
         : "";
+      const typeKey = TYPE_LABEL_KEYS[day.type];
       return `
         <li class="timeline-item" data-index="${index}">
           <div class="timeline-date">
             <strong>${shortDate(day.date)}</strong>
-            ${day.day}
+            ${weekday(day.date)}
           </div>
           <div class="timeline-body">
-            <span class="type-badge type-${day.type}">${TYPE_LABELS[day.type] || day.type}</span>
-            <p class="timeline-title">${escapeHtml(day.title)}</p>
-            <p class="timeline-summary">${escapeHtml(day.location.name)}${activitySuffix}</p>
+            <span class="type-badge type-${day.type}">${typeKey ? tr(typeKey) : day.type}</span>
+            <p class="timeline-title">${escapeHtml(t(day.title))}</p>
+            <p class="timeline-summary">${escapeHtml(t(day.location.name))}${activitySuffix}</p>
           </div>
         </li>`;
     })
@@ -184,40 +284,49 @@ function buildShipInfo() {
   const container = document.getElementById("ship-info");
   container.innerHTML = `
     <h2>${escapeHtml(v.name)}</h2>
-    <p>${escapeHtml(v.operator)} · built ${v.yearBuilt}</p>
-    <p>${escapeHtml(v.design)}</p>
+    <p>${escapeHtml(v.operator)} · ${lang === "de" ? "Baujahr" : "built"} ${v.yearBuilt}</p>
+    <p>${escapeHtml(t(v.design))}</p>
     <div class="ship-stats">
-      <div class="stat-card"><div class="stat-value">${v.guests}</div><div class="stat-label">Guests</div></div>
-      <div class="stat-card"><div class="stat-value">${v.crew}</div><div class="stat-label">Crew</div></div>
-      <div class="stat-card"><div class="stat-value">${v.staterooms}</div><div class="stat-label">Staterooms</div></div>
-      <div class="stat-card"><div class="stat-value">${v.decks}</div><div class="stat-label">Decks</div></div>
-      <div class="stat-card"><div class="stat-value">${v.lengthFt} ft</div><div class="stat-label">Length</div></div>
-      <div class="stat-card"><div class="stat-value">${v.beamFt} ft</div><div class="stat-label">Beam</div></div>
-      <div class="stat-card"><div class="stat-value">${v.grossTonnage.toLocaleString()}</div><div class="stat-label">Gross tonnage</div></div>
-      <div class="stat-card"><div class="stat-value">${v.speedKnots} kn</div><div class="stat-label">Cruising speed</div></div>
+      <div class="stat-card"><div class="stat-value">${v.guests}</div><div class="stat-label">${tr("guests")}</div></div>
+      <div class="stat-card"><div class="stat-value">${v.crew}</div><div class="stat-label">${tr("crew")}</div></div>
+      <div class="stat-card"><div class="stat-value">${v.staterooms}</div><div class="stat-label">${tr("staterooms")}</div></div>
+      <div class="stat-card"><div class="stat-value">${v.decks}</div><div class="stat-label">${tr("decks")}</div></div>
+      <div class="stat-card"><div class="stat-value">${v.lengthFt} ft</div><div class="stat-label">${tr("length")}</div></div>
+      <div class="stat-card"><div class="stat-value">${v.beamFt} ft</div><div class="stat-label">${tr("beam")}</div></div>
+      <div class="stat-card"><div class="stat-value">${v.grossTonnage.toLocaleString()}</div><div class="stat-label">${tr("grossTonnage")}</div></div>
+      <div class="stat-card"><div class="stat-value">${v.speedKnots} kn</div><div class="stat-label">${tr("cruisingSpeed")}</div></div>
     </div>
-    <h3>Highlights</h3>
-    <ul>${v.highlights.map((h) => `<li>${escapeHtml(h)}</li>`).join("")}</ul>
-    <p><a href="${v.moreInfoUrl}" target="_blank" rel="noopener">More on viking.com &rarr;</a></p>
-    <p class="source-note">${escapeHtml(v.sourceNote)}</p>
+    <h3>${tr("highlights")}</h3>
+    <ul>${v.highlights.map((h) => `<li>${escapeHtml(t(h))}</li>`).join("")}</ul>
+    <p><a href="${v.moreInfoUrl}" target="_blank" rel="noopener">${tr("moreInfo")}</a></p>
+    <p class="source-note">${escapeHtml(t(v.sourceNote))}</p>
   `;
+}
+
+function localeTag() {
+  return lang === "de" ? "de-DE" : "en-US";
 }
 
 function formatDate(iso) {
   const d = new Date(iso + "T00:00:00");
-  return d.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+  return d.toLocaleDateString(localeTag(), { weekday: "long", year: "numeric", month: "long", day: "numeric" });
 }
 
 function shortDate(iso) {
   const d = new Date(iso + "T00:00:00");
-  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  return d.toLocaleDateString(localeTag(), { month: "short", day: "numeric" });
+}
+
+function weekday(iso) {
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString(localeTag(), { weekday: "short" });
 }
 
 function formatDateRange(startIso, endIso) {
   const s = new Date(startIso + "T00:00:00");
   const e = new Date(endIso + "T00:00:00");
   const opts = { month: "short", day: "numeric", year: "numeric" };
-  return `${s.toLocaleDateString(undefined, opts)} – ${e.toLocaleDateString(undefined, opts)}`;
+  return `${s.toLocaleDateString(localeTag(), opts)} – ${e.toLocaleDateString(localeTag(), opts)}`;
 }
 
 function escapeHtml(str) {

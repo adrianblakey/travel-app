@@ -1,13 +1,19 @@
 {
   "id": "peru-south-america-2027",
-  "title": "Peru & South America: The Chilean Fjords",
-  "subtitle": "Pre-cruise Peru extension + Viking Jupiter, Santiago to Buenos Aires",
+  "title": {
+    "en": "Peru & South America: The Chilean Fjords",
+    "de": "Peru & Südamerika: Die Chilenischen Fjorde"
+  },
+  "subtitle": {
+    "en": "Pre-cruise Peru extension + Viking Jupiter, Santiago to Buenos Aires",
+    "de": "Peru-Verlängerung vor der Reise + Viking Jupiter, Santiago bis Buenos Aires"
+  },
   "type": "cruise",
   "startDate": "2027-01-17",
   "endDate": "2027-02-08",
   "travelers": ["Adrian", "Dorothee"],
   "flights": {
-    "label": "Flight itinerary",
+    "label": { "en": "Flight itinerary", "de": "Flugplan" },
     "url": "https://expe.onelink.me/hnLd/vfxckj9t"
   },
   "vessel": {
@@ -23,330 +29,455 @@
     "decks": 10,
     "speedKnots": 20,
     "spaceRatio": "52 gross tons per guest",
-    "design": "All-veranda small ship — every stateroom has a private veranda",
+    "design": {
+      "en": "All-veranda small ship — every stateroom has a private veranda",
+      "de": "Kleines Schiff nur mit Veranda-Kabinen — jede Kabine verfügt über eine eigene Veranda"
+    },
     "highlights": [
-      "Explorers' Dome — a forward-facing planetarium and theater-style venue on Deck 8",
-      "The Nordic Spa, infinity pool and heated indoor/outdoor Aquavit Terrace",
-      "Multiple dining venues including The Restaurant, World Café, Manfredi's and Chef's Table",
-      "No casino or children's facilities — an adults-oriented, destination-focused ship",
-      "Docks in smaller, harder-to-reach ports that larger cruise ships cannot access"
+      {
+        "en": "Explorers' Dome — a forward-facing planetarium and theater-style venue on Deck 8",
+        "de": "Explorers' Dome — ein nach vorne ausgerichtetes Planetarium und Theaterraum auf Deck 8"
+      },
+      {
+        "en": "The Nordic Spa, infinity pool and heated indoor/outdoor Aquavit Terrace",
+        "de": "Das Nordic Spa, ein Infinity-Pool und die beheizte Innen-/Außen-Terrasse Aquavit Terrace"
+      },
+      {
+        "en": "Multiple dining venues including The Restaurant, World Café, Manfredi's and Chef's Table",
+        "de": "Mehrere Restaurants, darunter The Restaurant, World Café, Manfredi's und Chef's Table"
+      },
+      {
+        "en": "No casino or children's facilities — an adults-oriented, destination-focused ship",
+        "de": "Kein Kasino und keine Kinderbetreuung — ein auf Erwachsene und Reiseziele ausgerichtetes Schiff"
+      },
+      {
+        "en": "Docks in smaller, harder-to-reach ports that larger cruise ships cannot access",
+        "de": "Legt in kleineren, schwerer erreichbaren Häfen an, die größere Kreuzfahrtschiffe nicht anlaufen können"
+      }
     ],
     "moreInfoUrl": "https://www.vikingcruises.com/oceans/ships/viking-jupiter.html",
-    "sourceNote": "Ship facts from viking.com and public Viking Ocean specification sheets, current as of 2026."
-  },
-  "legend": {
-    "hotel": "Overnight on land (pre/post-cruise extension)",
-    "transfer": "Transfer between locations",
-    "embark": "Boarding the ship",
-    "disembark": "Leaving the ship",
-    "port": "In port — excursions available",
-    "sea": "At sea — no port",
-    "scenic": "Scenic sailing — no docking, but notable views"
+    "sourceNote": {
+      "en": "Ship facts from viking.com and public Viking Ocean specification sheets, current as of 2026.",
+      "de": "Schiffsdaten von viking.com und öffentlichen Viking-Ocean-Datenblättern, Stand 2026."
+    }
   },
   "days": [
     {
       "date": "2027-01-17",
-      "day": "Sun",
       "type": "hotel",
-      "phase": "Peru Extension",
-      "location": { "name": "Lima, Peru", "lat": -12.0464, "lon": -77.0428 },
-      "title": "Arrive in Lima",
-      "summary": "Transfer from Lima airport to the hotel. First night of the pre-cruise Best of Peru extension.",
+      "location": {
+        "lat": -12.0464, "lon": -77.0428,
+        "name": { "en": "Lima, Peru", "de": "Lima, Peru" }
+      },
+      "title": { "en": "Arrive in Lima", "de": "Ankunft in Lima" },
+      "summary": {
+        "en": "Transfer from Lima airport to the hotel. First night of the pre-cruise Best of Peru extension.",
+        "de": "Transfer vom Flughafen Lima zum Hotel. Erste Nacht der Peru-Verlängerung vor der Kreuzfahrt."
+      },
       "lodging": "Wyndham Grand Costa del Sol, Lima Airport",
       "showFlights": true
     },
     {
       "date": "2027-01-18",
-      "day": "Mon",
       "type": "hotel",
-      "phase": "Peru Extension",
-      "location": { "name": "Urubamba, Sacred Valley, Peru", "lat": -13.3057, "lon": -72.1147 },
-      "title": "Sacred Valley",
-      "summary": "Transfer from Lima to the Sacred Valley of the Incas. Two nights based in Urubamba to explore the valley ahead of Cusco.",
+      "location": {
+        "lat": -13.3057, "lon": -72.1147,
+        "name": { "en": "Urubamba, Sacred Valley, Peru", "de": "Urubamba, Heiliges Tal, Peru" }
+      },
+      "title": { "en": "Sacred Valley", "de": "Heiliges Tal" },
+      "summary": {
+        "en": "Transfer from Lima to the Sacred Valley of the Incas. Two nights based in Urubamba to explore the valley ahead of Cusco.",
+        "de": "Transfer von Lima ins Heilige Tal der Inka. Zwei Nächte in Urubamba, um das Tal vor Cusco zu erkunden."
+      },
       "lodging": "Tambo Del Inka Resort & Spa"
     },
     {
       "date": "2027-01-20",
-      "day": "Wed",
       "type": "hotel",
-      "phase": "Peru Extension",
-      "location": { "name": "Cusco, Peru", "lat": -13.5319, "lon": -71.9675 },
-      "title": "Cusco",
-      "summary": "Transfer from the Sacred Valley to Cusco, the historic Inca capital, for two nights before joining the ship.",
+      "location": {
+        "lat": -13.5319, "lon": -71.9675,
+        "name": { "en": "Cusco, Peru", "de": "Cusco, Peru" }
+      },
+      "title": { "en": "Cusco", "de": "Cusco" },
+      "summary": {
+        "en": "Transfer from the Sacred Valley to Cusco, the historic Inca capital, for two nights before joining the ship.",
+        "de": "Transfer vom Heiligen Tal nach Cusco, der historischen Inka-Hauptstadt, für zwei Nächte vor dem Einschiffen."
+      },
       "lodging": "Palacio Del Inka, Cusco"
     },
     {
       "date": "2027-01-22",
-      "day": "Fri",
       "type": "embark",
-      "phase": "Cruise",
-      "location": { "name": "Santiago (Valparaíso), Chile", "lat": -33.0472, "lon": -71.6127 },
-      "title": "Transfer to the ship & embark",
-      "summary": "Transfer from Cusco to Santiago (Valparaíso) and embark Viking Jupiter. Embarkation at 13:00. Stateroom: Penthouse Veranda.",
-      "arrival": null,
-      "departure": null
+      "location": {
+        "lat": -33.0472, "lon": -71.6127,
+        "name": { "en": "Santiago (Valparaíso), Chile", "de": "Santiago (Valparaíso), Chile" }
+      },
+      "title": { "en": "Transfer to the ship & embark", "de": "Transfer zum Schiff & Einschiffung" },
+      "summary": {
+        "en": "Transfer from Cusco to Santiago (Valparaíso) and embark Viking Jupiter. Embarkation at 13:00. Stateroom: Penthouse Veranda.",
+        "de": "Transfer von Cusco nach Santiago (Valparaíso) und Einschiffung auf die Viking Jupiter. Einschiffung um 13:00 Uhr. Kabine: Penthouse Veranda."
+      }
     },
     {
       "date": "2027-01-23",
-      "day": "Sat",
       "type": "port",
-      "phase": "Cruise",
-      "location": { "name": "Santiago (Valparaíso), Chile", "lat": -33.0472, "lon": -71.6127 },
-      "title": "Valparaíso, Chile",
-      "summary": "First full day, docked in Valparaíso — the colorful port city on Chile's central coast.",
-      "arrival": null,
+      "location": {
+        "lat": -33.0472, "lon": -71.6127,
+        "name": { "en": "Santiago (Valparaíso), Chile", "de": "Santiago (Valparaíso), Chile" }
+      },
+      "title": { "en": "Valparaíso, Chile", "de": "Valparaíso, Chile" },
+      "summary": {
+        "en": "First full day, docked in Valparaíso — the colorful port city on Chile's central coast.",
+        "de": "Erster voller Tag, festgemacht in Valparaíso — der farbenfrohen Hafenstadt an Chiles Zentralküste."
+      },
       "departure": "18:00",
       "activities": [
         {
-          "title": "Valparaíso & Museums",
-          "duration": "3.5 hours",
-          "time": "9:15 AM",
+          "title": { "en": "Valparaíso & Museums", "de": "Valparaíso & Museen" },
+          "duration": { "en": "3.5 hours", "de": "3,5 Stunden" },
+          "time": { "en": "9:15 AM", "de": "9:15 Uhr" },
           "travelers": ["Adrian", "Dorothee"],
-          "description": "Discover the city of two halves, Valparaíso, and enjoy a short sojourn in Viña del Mar to visit the Fonck Museum. Valparaíso's upper area, Los Cerros, is a maze of residences nestled among 42 hills. Marvel at the views from the top, then visit the Baburizza Palace, admiring its collection of artworks by European and Chilean artists. Descend to the foot of the hill for a stroll around Plaza Sotomayor and view the naval headquarters building and the Monument to the Heroes of Iquique. Continue by motor coach to Viña del Mar and visit the Fonck Museum, featuring archaeological artifacts and historic items from the Chilean mainland and Rapa Nui (Easter Island)."
+          "description": {
+            "en": "Discover the city of two halves, Valparaíso, and enjoy a short sojourn in Viña del Mar to visit the Fonck Museum. Valparaíso's upper area, Los Cerros, is a maze of residences nestled among 42 hills. Marvel at the views from the top, then visit the Baburizza Palace, admiring its collection of artworks by European and Chilean artists. Descend to the foot of the hill for a stroll around Plaza Sotomayor and view the naval headquarters building and the Monument to the Heroes of Iquique. Continue by motor coach to Viña del Mar and visit the Fonck Museum, featuring archaeological artifacts and historic items from the Chilean mainland and Rapa Nui (Easter Island).",
+            "de": "Entdecken Sie die zweigeteilte Stadt Valparaíso und besuchen Sie bei einem kurzen Abstecher nach Viña del Mar das Fonck-Museum. Der obere Teil Valparaísos, Los Cerros, ist ein Labyrinth aus Häusern auf 42 Hügeln. Genießen Sie die Aussicht von oben und besuchen Sie anschließend den Palacio Baburizza mit seiner Sammlung europäischer und chilenischer Kunst. Steigen Sie hinab zum Plaza Sotomayor, spazieren Sie dort umher und betrachten Sie das Gebäude des Marinehauptquartiers sowie das Denkmal für die Helden von Iquique. Fahren Sie mit dem Bus weiter nach Viña del Mar und besuchen Sie das Fonck-Museum mit archäologischen Fundstücken vom chilenischen Festland und von Rapa Nui (Osterinsel)."
+          }
         }
       ]
     },
     {
       "date": "2027-01-24",
-      "day": "Sun",
       "type": "sea",
-      "phase": "Cruise",
-      "location": { "name": "Pacific Ocean", "lat": -37.5, "lon": -72.3 },
-      "title": "Sail the Pacific Ocean",
-      "summary": "A day at sea, sailing south along the Chilean coast toward Puerto Montt."
+      "location": {
+        "lat": -37.5, "lon": -72.3,
+        "name": { "en": "Pacific Ocean", "de": "Pazifischer Ozean" }
+      },
+      "title": { "en": "Sail the Pacific Ocean", "de": "Fahrt über den Pazifik" },
+      "summary": {
+        "en": "A day at sea, sailing south along the Chilean coast toward Puerto Montt.",
+        "de": "Ein Seetag, südwärts entlang der chilenischen Küste in Richtung Puerto Montt."
+      }
     },
     {
       "date": "2027-01-25",
-      "day": "Mon",
       "type": "port",
-      "phase": "Cruise",
-      "location": { "name": "Puerto Montt, Chile", "lat": -41.4693, "lon": -72.9424 },
-      "title": "Puerto Montt, Chile",
-      "summary": "Gateway to Chile's Lake District, with views of the Osorno volcano and German colonial heritage in nearby Puerto Varas and Frutillar.",
+      "location": {
+        "lat": -41.4693, "lon": -72.9424,
+        "name": { "en": "Puerto Montt, Chile", "de": "Puerto Montt, Chile" }
+      },
+      "title": { "en": "Puerto Montt, Chile", "de": "Puerto Montt, Chile" },
+      "summary": {
+        "en": "Gateway to Chile's Lake District, with views of the Osorno volcano and German colonial heritage in nearby Puerto Varas and Frutillar.",
+        "de": "Tor zur chilenischen Seenplatte mit Blick auf den Vulkan Osorno und deutschem Kolonialerbe in den nahegelegenen Städten Puerto Varas und Frutillar."
+      },
       "arrival": "08:30",
       "departure": "17:30",
       "activities": [
         {
-          "title": "Puerto Varas & Lake District Drive",
-          "duration": "3.5 hours",
-          "time": "9:45 AM",
+          "title": { "en": "Puerto Varas & Lake District Drive", "de": "Puerto Varas & Fahrt durch die Seenplatte" },
+          "duration": { "en": "3.5 hours", "de": "3,5 Stunden" },
+          "time": { "en": "9:45 AM", "de": "9:45 Uhr" },
           "travelers": ["Adrian", "Dorothee"],
-          "description": "Immerse yourself in pristine nature during a panoramic drive along the western shores of Llanquihue Lake. Chile's second-largest lake features a majestic backdrop of the snowcapped Osorno and Calbuco volcanoes, often reflected in its crystal-clear waters. Continue to Puerto Varas, known as the “City of Roses,” for free time to soak up the views or browse the local shops."
+          "description": {
+            "en": "Immerse yourself in pristine nature during a panoramic drive along the western shores of Llanquihue Lake. Chile's second-largest lake features a majestic backdrop of the snowcapped Osorno and Calbuco volcanoes, often reflected in its crystal-clear waters. Continue to Puerto Varas, known as the “City of Roses,” for free time to soak up the views or browse the local shops.",
+            "de": "Erleben Sie unberührte Natur bei einer Panoramafahrt entlang des Westufers des Llanquihue-Sees. Chiles zweitgrößter See wird von den schneebedeckten Vulkanen Osorno und Calbuco überragt, die sich oft in seinem klaren Wasser spiegeln. Weiter geht es nach Puerto Varas, bekannt als „Stadt der Rosen“, wo Sie Zeit haben, die Aussicht zu genießen oder die Geschäfte zu erkunden."
+          }
         }
       ]
     },
     {
       "date": "2027-01-26",
-      "day": "Tue",
       "type": "scenic",
-      "phase": "Cruise",
-      "location": { "name": "Chilean Fjords", "lat": -45.5, "lon": -73.7 },
-      "title": "Scenic Sailing: Chilean Fjords",
-      "summary": "A full day of scenic sailing through the narrow channels and fjords of Chilean Patagonia — no port stop."
+      "location": {
+        "lat": -45.5, "lon": -73.7,
+        "name": { "en": "Chilean Fjords", "de": "Chilenische Fjorde" }
+      },
+      "title": { "en": "Scenic Sailing: Chilean Fjords", "de": "Landschaftliche Fahrt: Chilenische Fjorde" },
+      "summary": {
+        "en": "A full day of scenic sailing through the narrow channels and fjords of Chilean Patagonia — no port stop.",
+        "de": "Ein ganzer Tag landschaftlicher Fahrt durch die engen Kanäle und Fjorde Chilenisch-Patagoniens — ohne Hafenstopp."
+      }
     },
     {
       "date": "2027-01-27",
-      "day": "Wed",
       "type": "scenic",
-      "phase": "Cruise",
-      "location": { "name": "Amalia Glacier, Chile", "lat": -50.9667, "lon": -73.7667 },
-      "title": "Scenic Sailing: Amalia Glacier",
-      "summary": "Sailing past the Amalia (Skua) Glacier, one of the most spectacular tidewater glaciers in the Chilean fjords."
+      "location": {
+        "lat": -50.9667, "lon": -73.7667,
+        "name": { "en": "Amalia Glacier, Chile", "de": "Amalia-Gletscher, Chile" }
+      },
+      "title": { "en": "Scenic Sailing: Amalia Glacier", "de": "Landschaftliche Fahrt: Amalia-Gletscher" },
+      "summary": {
+        "en": "Sailing past the Amalia (Skua) Glacier, one of the most spectacular tidewater glaciers in the Chilean fjords.",
+        "de": "Vorbeifahrt am Amalia- (Skua-)Gletscher, einem der eindrucksvollsten Gezeitengletscher in den chilenischen Fjorden."
+      }
     },
     {
       "date": "2027-01-28",
-      "day": "Thu",
       "type": "port",
-      "phase": "Cruise",
-      "location": { "name": "Punta Arenas, Chile", "lat": -53.1638, "lon": -70.9171 },
-      "title": "Punta Arenas, Chile",
-      "summary": "Chile's southernmost major city on the Strait of Magellan, gateway to Chilean Patagonia.",
+      "location": {
+        "lat": -53.1638, "lon": -70.9171,
+        "name": { "en": "Punta Arenas, Chile", "de": "Punta Arenas, Chile" }
+      },
+      "title": { "en": "Punta Arenas, Chile", "de": "Punta Arenas, Chile" },
+      "summary": {
+        "en": "Chile's southernmost major city on the Strait of Magellan, gateway to Chilean Patagonia.",
+        "de": "Chiles südlichste Großstadt an der Magellanstraße, Tor zu Chilenisch-Patagonien."
+      },
       "arrival": "08:00",
       "departure": "16:00",
       "activities": [
         {
-          "title": "Panoramic Punta Arenas",
-          "duration": "2.5 hours",
-          "time": "9:30 AM",
+          "title": { "en": "Panoramic Punta Arenas", "de": "Panorama-Rundfahrt Punta Arenas" },
+          "duration": { "en": "2.5 hours", "de": "2,5 Stunden" },
+          "time": { "en": "9:30 AM", "de": "9:30 Uhr" },
           "travelers": ["Adrian", "Dorothee"],
-          "description": "Discover the charm of Chile's most southerly city, situated by the Strait of Magellan. Starting at Cerro de la Cruz, marvel at views of the city, the Strait and Tierra del Fuego Island. Take a scenic drive past the Monumento al Ovejero (Sheepdog Monument), then have time to browse the handicraft market in Plaza de Armas before returning to the ship."
+          "description": {
+            "en": "Discover the charm of Chile's most southerly city, situated by the Strait of Magellan. Starting at Cerro de la Cruz, marvel at views of the city, the Strait and Tierra del Fuego Island. Take a scenic drive past the Monumento al Ovejero (Sheepdog Monument), then have time to browse the handicraft market in Plaza de Armas before returning to the ship.",
+            "de": "Entdecken Sie den Charme von Chiles südlichster Stadt an der Magellanstraße. Vom Cerro de la Cruz aus genießen Sie den Blick auf die Stadt, die Meerenge und die Insel Feuerland. Bei einer landschaftlichen Fahrt geht es vorbei am Monumento al Ovejero (Schäferhund-Denkmal), bevor Sie Zeit haben, den Kunsthandwerkermarkt an der Plaza de Armas zu besuchen, ehe es zurück zum Schiff geht."
+          }
         }
       ]
     },
     {
       "date": "2027-01-29",
-      "day": "Fri",
       "type": "port",
-      "phase": "Cruise",
-      "location": { "name": "Ushuaia, Argentina", "lat": -54.8019, "lon": -68.3030 },
-      "title": "Ushuaia, Argentina",
-      "summary": "The “City at the End of the World” and gateway to Tierra del Fuego National Park.",
+      "location": {
+        "lat": -54.8019, "lon": -68.3030,
+        "name": { "en": "Ushuaia, Argentina", "de": "Ushuaia, Argentinien" }
+      },
+      "title": { "en": "Ushuaia, Argentina", "de": "Ushuaia, Argentinien" },
+      "summary": {
+        "en": "The “City at the End of the World” and gateway to Tierra del Fuego National Park.",
+        "de": "Die „Stadt am Ende der Welt“ und Tor zum Nationalpark Feuerland."
+      },
       "arrival": "11:00",
       "departure": "20:00",
       "activities": [
         {
-          "title": "Tierra del Fuego National Park",
-          "duration": "4.5 hours",
-          "time": "1:30 PM",
+          "title": { "en": "Tierra del Fuego National Park", "de": "Nationalpark Feuerland" },
+          "duration": { "en": "4.5 hours", "de": "4,5 Stunden" },
+          "time": { "en": "1:30 PM", "de": "13:30 Uhr" },
           "travelers": ["Adrian"],
-          "description": "Argentina's first shoreline national park stretches north from the Beagle Channel along the Chilean border. Its diverse landscape encompasses lush forests, wildflower-filled meadows and snowcapped mountain peaks, with pale-gray trunks from trees damaged by beavers standing out against the green landscape. Stops at Panoramic Point, Acigami Lake and Lapataia Bay offer photo opportunities of rugged mountains mirrored in silver lakes."
+          "description": {
+            "en": "Argentina's first shoreline national park stretches north from the Beagle Channel along the Chilean border. Its diverse landscape encompasses lush forests, wildflower-filled meadows and snowcapped mountain peaks, with pale-gray trunks from trees damaged by beavers standing out against the green landscape. Stops at Panoramic Point, Acigami Lake and Lapataia Bay offer photo opportunities of rugged mountains mirrored in silver lakes.",
+            "de": "Argentiniens erster Küsten-Nationalpark erstreckt sich vom Beagle-Kanal nordwärts entlang der chilenischen Grenze. Seine vielfältige Landschaft umfasst dichte Wälder, blumenübersäte Wiesen und schneebedeckte Berggipfel, wobei die hellgrauen Stämme von Biberschäden gegen das Grün hervorstechen. Stopps am Panoramic Point, am Acigami-See und in der Lapataia-Bucht bieten Fotomotive schroffer Berge, die sich in silbernen Seen spiegeln."
+          }
         },
         {
-          "title": "Snapshots of Ushuaia",
-          "duration": "2.5 hours",
-          "time": "4:15 PM",
+          "title": { "en": "Snapshots of Ushuaia", "de": "Impressionen von Ushuaia" },
+          "duration": { "en": "2.5 hours", "de": "2,5 Stunden" },
+          "time": { "en": "4:15 PM", "de": "16:15 Uhr" },
           "travelers": ["Dorothee"],
-          "description": "Discover the intriguing history and scenic views of Ushuaia, the “City at the End of the World.” Set out by motor coach, passing landmarks including the Government House and the End of the World Museum, the Plaza Islas Malvinas memorial and the Old Prison of Ushuaia, which occupies remnants of the old presidio. Enjoy a guided tour of the museum before returning to the ship."
+          "description": {
+            "en": "Discover the intriguing history and scenic views of Ushuaia, the “City at the End of the World.” Set out by motor coach, passing landmarks including the Government House and the End of the World Museum, the Plaza Islas Malvinas memorial and the Old Prison of Ushuaia, which occupies remnants of the old presidio. Enjoy a guided tour of the museum before returning to the ship.",
+            "de": "Entdecken Sie die faszinierende Geschichte und die Aussicht von Ushuaia, der „Stadt am Ende der Welt“. Mit dem Bus geht es vorbei an Sehenswürdigkeiten wie dem Regierungsgebäude und dem End-of-the-World-Museum, dem Mahnmal Plaza Islas Malvinas und dem alten Gefängnis von Ushuaia, das auf den Resten des früheren Presidio steht. Im Anschluss folgt eine Führung durch das Museum, bevor es zurück zum Schiff geht."
+          }
         }
       ]
     },
     {
       "date": "2027-01-30",
-      "day": "Sat",
       "type": "scenic",
-      "phase": "Cruise",
-      "location": { "name": "Cape Horn", "lat": -55.9833, "lon": -67.2833 },
-      "title": "Scenic Sailing: Cape Horn",
-      "summary": "Rounding Cape Horn, the southernmost headland of the Tierra del Fuego archipelago, where the Pacific and Atlantic meet."
+      "location": {
+        "lat": -55.9833, "lon": -67.2833,
+        "name": { "en": "Cape Horn", "de": "Kap Hoorn" }
+      },
+      "title": { "en": "Scenic Sailing: Cape Horn", "de": "Landschaftliche Fahrt: Kap Hoorn" },
+      "summary": {
+        "en": "Rounding Cape Horn, the southernmost headland of the Tierra del Fuego archipelago, where the Pacific and Atlantic meet.",
+        "de": "Umrundung von Kap Hoorn, der südlichsten Landspitze des Feuerland-Archipels, wo Pazifik und Atlantik aufeinandertreffen."
+      }
     },
     {
       "date": "2027-01-31",
-      "day": "Sun",
       "type": "sea",
-      "phase": "Cruise",
-      "location": { "name": "Atlantic Ocean", "lat": -54.5, "lon": -63.0 },
-      "title": "Sail the Atlantic Ocean",
-      "summary": "A day at sea, heading north-east across the South Atlantic toward the Falkland Islands."
+      "location": {
+        "lat": -54.5, "lon": -63.0,
+        "name": { "en": "Atlantic Ocean", "de": "Atlantischer Ozean" }
+      },
+      "title": { "en": "Sail the Atlantic Ocean", "de": "Fahrt über den Atlantik" },
+      "summary": {
+        "en": "A day at sea, heading north-east across the South Atlantic toward the Falkland Islands.",
+        "de": "Ein Seetag, nordostwärts über den Südatlantik in Richtung Falklandinseln."
+      }
     },
     {
       "date": "2027-02-01",
-      "day": "Mon",
       "type": "port",
-      "phase": "Cruise",
-      "location": { "name": "Port Stanley, Falkland Islands", "lat": -51.6961, "lon": -57.8514 },
-      "title": "Port Stanley, Falkland Islands",
-      "summary": "The Falklands' compact capital, known for its wildlife-rich coastline and colonial-era architecture.",
+      "location": {
+        "lat": -51.6961, "lon": -57.8514,
+        "name": { "en": "Port Stanley, Falkland Islands", "de": "Port Stanley, Falklandinseln" }
+      },
+      "title": { "en": "Port Stanley, Falkland Islands", "de": "Port Stanley, Falklandinseln" },
+      "summary": {
+        "en": "The Falklands' compact capital, known for its wildlife-rich coastline and colonial-era architecture.",
+        "de": "Die kompakte Hauptstadt der Falklandinseln, bekannt für ihre tierreiche Küste und die Architektur aus der Kolonialzeit."
+      },
       "arrival": "07:00",
       "departure": "17:00",
       "activities": [
         {
-          "title": "Scenic Gypsy Cove",
-          "duration": "2 hours",
-          "time": "9:30 AM",
+          "title": { "en": "Scenic Gypsy Cove", "de": "Scenic Gypsy Cove" },
+          "duration": { "en": "2 hours", "de": "2 Stunden" },
+          "time": { "en": "9:30 AM", "de": "9:30 Uhr" },
           "travelers": ["Adrian", "Dorothee"],
-          "description": "Explore the rugged natural beauty and local wildlife of the Falklands during a visit to Gypsy Cove: a walking trail overlooking a wind-sheltered stretch of white-sand beach and Port Stanley's most accessible National Nature Reserve. Keep watch for Magellanic penguins and other species of birds such as upland geese and rock cormorants, with viewing platforms along the way."
+          "description": {
+            "en": "Explore the rugged natural beauty and local wildlife of the Falklands during a visit to Gypsy Cove: a walking trail overlooking a wind-sheltered stretch of white-sand beach and Port Stanley's most accessible National Nature Reserve. Keep watch for Magellanic penguins and other species of birds such as upland geese and rock cormorants, with viewing platforms along the way.",
+            "de": "Erleben Sie die raue Naturschönheit und Tierwelt der Falklandinseln bei einem Besuch der Gypsy Cove: ein Wanderweg oberhalb eines windgeschützten weißen Sandstrands und des am leichtesten zugänglichen Naturschutzgebiets bei Port Stanley. Halten Sie Ausschau nach Magellan-Pinguinen und anderen Vogelarten wie Magellangänsen und Krabbenscharben; unterwegs gibt es Aussichtsplattformen."
+          }
         }
       ]
     },
     {
       "date": "2027-02-02",
-      "day": "Tue",
       "type": "sea",
-      "phase": "Cruise",
-      "location": { "name": "Atlantic Ocean", "lat": -47.0, "lon": -61.0 },
-      "title": "Sail the Atlantic Ocean",
-      "summary": "A day at sea, continuing north along the Argentine coast toward Puerto Madryn."
+      "location": {
+        "lat": -47.0, "lon": -61.0,
+        "name": { "en": "Atlantic Ocean", "de": "Atlantischer Ozean" }
+      },
+      "title": { "en": "Sail the Atlantic Ocean", "de": "Fahrt über den Atlantik" },
+      "summary": {
+        "en": "A day at sea, continuing north along the Argentine coast toward Puerto Madryn.",
+        "de": "Ein Seetag, weiter nordwärts entlang der argentinischen Küste in Richtung Puerto Madryn."
+      }
     },
     {
       "date": "2027-02-03",
-      "day": "Wed",
       "type": "port",
-      "phase": "Cruise",
-      "location": { "name": "Puerto Madryn, Argentina", "lat": -42.7692, "lon": -65.0385 },
-      "title": "Puerto Madryn, Argentina",
-      "summary": "Gateway to Peninsula Valdés, a UNESCO World Heritage wildlife sanctuary, and a city with strong Welsh settler heritage.",
+      "location": {
+        "lat": -42.7692, "lon": -65.0385,
+        "name": { "en": "Puerto Madryn, Argentina", "de": "Puerto Madryn, Argentinien" }
+      },
+      "title": { "en": "Puerto Madryn, Argentina", "de": "Puerto Madryn, Argentinien" },
+      "summary": {
+        "en": "Gateway to Peninsula Valdés, a UNESCO World Heritage wildlife sanctuary, and a city with strong Welsh settler heritage.",
+        "de": "Tor zur Halbinsel Valdés, einem UNESCO-Weltnaturerbe, und Stadt mit starkem walisischen Siedlererbe."
+      },
       "arrival": "08:00",
       "departure": "20:00",
       "activities": [
         {
-          "title": "Punta Loma Sea Lions & Puerto Madryn's Heritage",
-          "duration": "3.75 hours",
-          "time": "8:45 AM",
+          "title": { "en": "Punta Loma Sea Lions & Puerto Madryn's Heritage", "de": "Seelöwen von Punta Loma & das Erbe von Puerto Madryn" },
+          "duration": { "en": "3.75 hours", "de": "3,75 Stunden" },
+          "time": { "en": "8:45 AM", "de": "8:45 Uhr" },
           "travelers": ["Adrian", "Dorothee"],
-          "description": "Learn about Puerto Madryn's Welsh origins and view the sea lion colony at Punta Loma Natural Reserve, Argentina's oldest marine reserve and home to a permanent sea lion colony. Continue to Punta Cuevas to see the El Indio monument, then visit the Museo del Desembarco Punta Cuevas to learn about the founding of Puerto Madryn and its Welsh heritage."
+          "description": {
+            "en": "Learn about Puerto Madryn's Welsh origins and view the sea lion colony at Punta Loma Natural Reserve, Argentina's oldest marine reserve and home to a permanent sea lion colony. Continue to Punta Cuevas to see the El Indio monument, then visit the Museo del Desembarco Punta Cuevas to learn about the founding of Puerto Madryn and its Welsh heritage.",
+            "de": "Erfahren Sie mehr über die walisischen Ursprünge von Puerto Madryn und besichtigen Sie die Seelöwenkolonie im Naturreservat Punta Loma, Argentiniens ältestem Meeresschutzgebiet mit einer dauerhaften Seelöwenkolonie. Weiter geht es nach Punta Cuevas zum Denkmal El Indio und zum Museo del Desembarco Punta Cuevas, das die Gründung von Puerto Madryn und sein walisisches Erbe zeigt."
+          }
         }
       ]
     },
     {
       "date": "2027-02-04",
-      "day": "Thu",
       "type": "sea",
-      "phase": "Cruise",
-      "location": { "name": "Atlantic Ocean", "lat": -39.5, "lon": -61.0 },
-      "title": "Sail the Atlantic Ocean",
-      "summary": "A day at sea, en route toward Montevideo."
+      "location": {
+        "lat": -39.5, "lon": -61.0,
+        "name": { "en": "Atlantic Ocean", "de": "Atlantischer Ozean" }
+      },
+      "title": { "en": "Sail the Atlantic Ocean", "de": "Fahrt über den Atlantik" },
+      "summary": {
+        "en": "A day at sea, en route toward Montevideo.",
+        "de": "Ein Seetag, auf dem Weg nach Montevideo."
+      }
     },
     {
       "date": "2027-02-05",
-      "day": "Fri",
       "type": "sea",
-      "phase": "Cruise",
-      "location": { "name": "Atlantic Ocean", "lat": -36.5, "lon": -58.7 },
-      "title": "Sail the Atlantic Ocean",
-      "summary": "A second day at sea, approaching the Río de la Plata estuary."
+      "location": {
+        "lat": -36.5, "lon": -58.7,
+        "name": { "en": "Atlantic Ocean", "de": "Atlantischer Ozean" }
+      },
+      "title": { "en": "Sail the Atlantic Ocean", "de": "Fahrt über den Atlantik" },
+      "summary": {
+        "en": "A second day at sea, approaching the Río de la Plata estuary.",
+        "de": "Ein zweiter Seetag, auf dem Weg zur Mündung des Río de la Plata."
+      }
     },
     {
       "date": "2027-02-06",
-      "day": "Sat",
       "type": "port",
-      "phase": "Cruise",
-      "location": { "name": "Montevideo, Uruguay", "lat": -34.9011, "lon": -56.1645 },
-      "title": "Montevideo, Uruguay",
-      "summary": "Uruguay's compact, walkable capital on the Río de la Plata.",
+      "location": {
+        "lat": -34.9011, "lon": -56.1645,
+        "name": { "en": "Montevideo, Uruguay", "de": "Montevideo, Uruguay" }
+      },
+      "title": { "en": "Montevideo, Uruguay", "de": "Montevideo, Uruguay" },
+      "summary": {
+        "en": "Uruguay's compact, walkable capital on the Río de la Plata.",
+        "de": "Uruguays kompakte, gut zu Fuß erkundbare Hauptstadt am Río de la Plata."
+      },
       "arrival": "08:00",
       "departure": "19:00",
       "activities": [
         {
-          "title": "The Art of Uruguay",
-          "duration": "4.5 hours",
-          "time": "12:45 PM",
+          "title": { "en": "The Art of Uruguay", "de": "Die Kunst Uruguays" },
+          "duration": { "en": "4.5 hours", "de": "4,5 Stunden" },
+          "time": { "en": "12:45 PM", "de": "12:45 Uhr" },
           "travelers": ["Adrian"],
-          "description": "Explore the artistic heritage of Uruguay during an excursion to two museums exhibiting national artists. Start with a tour of the historic Old Town at the former city gate, then pass the well-preserved colonial-era buildings surrounding Constitution Square. Visit the Joaquín Torres García Museum, home to the works of Uruguay's most influential artist, then see the Blanes Museum and the Visual Arts Museum."
+          "description": {
+            "en": "Explore the artistic heritage of Uruguay during an excursion to two museums exhibiting national artists. Start with a tour of the historic Old Town at the former city gate, then pass the well-preserved colonial-era buildings surrounding Constitution Square. Visit the Joaquín Torres García Museum, home to the works of Uruguay's most influential artist, then see the Blanes Museum and the Visual Arts Museum.",
+            "de": "Entdecken Sie das künstlerische Erbe Uruguays bei einem Ausflug zu zwei Museen mit Werken nationaler Künstler. Der Rundgang beginnt am ehemaligen Stadttor der historischen Altstadt und führt vorbei an den gut erhaltenen Kolonialbauten rund um die Plaza Constitución. Besuchen Sie das Museo Joaquín Torres García mit Werken von Uruguays einflussreichstem Künstler sowie das Museo Blanes und das Museo de Artes Visuales."
+          }
         },
         {
-          "title": "Discover Montevideo & Carnival Museum",
-          "duration": "3 hours",
-          "time": "8:45 AM",
+          "title": { "en": "Discover Montevideo & Carnival Museum", "de": "Montevideo entdecken & Karnevalsmuseum" },
+          "duration": { "en": "3 hours", "de": "3 Stunden" },
+          "time": { "en": "8:45 AM", "de": "8:45 Uhr" },
           "travelers": ["Adrian", "Dorothee"],
-          "description": "Admire Montevideo's landmarks, parks and gardens, then visit the Carnival Museum. See the monument to national hero José Gervasio Artigas, the Government House and the Solís Theater, before continuing to the Legislative Palace. Return to the Ciudad Vieja for a visit to the Carnival Museum, showcasing the traditions of this beloved festival, with a murga performance."
+          "description": {
+            "en": "Admire Montevideo's landmarks, parks and gardens, then visit the Carnival Museum. See the monument to national hero José Gervasio Artigas, the Government House and the Solís Theater, before continuing to the Legislative Palace. Return to the Ciudad Vieja for a visit to the Carnival Museum, showcasing the traditions of this beloved festival, with a murga performance.",
+            "de": "Bewundern Sie die Wahrzeichen, Parks und Gärten Montevideos und besuchen Sie anschließend das Karnevalsmuseum. Sehen Sie das Denkmal für den Nationalhelden José Gervasio Artigas, das Regierungsgebäude und das Teatro Solís, bevor es weiter zum Legislativpalast geht. Zurück in der Ciudad Vieja besuchen Sie das Karnevalsmuseum, das die Traditionen dieses beliebten Festes zeigt, inklusive einer Murga-Vorführung."
+          }
         }
       ]
     },
     {
       "date": "2027-02-07",
-      "day": "Sun",
       "type": "port",
-      "phase": "Cruise",
-      "location": { "name": "Buenos Aires, Argentina", "lat": -34.6037, "lon": -58.3816 },
-      "title": "Buenos Aires, Argentina",
-      "summary": "Arrival in Buenos Aires, the final port — the ship remains docked overnight ahead of disembarkation.",
+      "location": {
+        "lat": -34.6037, "lon": -58.3816,
+        "name": { "en": "Buenos Aires, Argentina", "de": "Buenos Aires, Argentinien" }
+      },
+      "title": { "en": "Buenos Aires, Argentina", "de": "Buenos Aires, Argentinien" },
+      "summary": {
+        "en": "Arrival in Buenos Aires, the final port — the ship remains docked overnight ahead of disembarkation.",
+        "de": "Ankunft in Buenos Aires, dem letzten Hafen — das Schiff bleibt über Nacht vor der Ausschiffung liegen."
+      },
       "arrival": "08:00",
-      "departure": null,
       "activities": [
         {
-          "title": "Highlights of Buenos Aires",
-          "duration": "4 hours",
-          "time": "9:00 AM",
+          "title": { "en": "Highlights of Buenos Aires", "de": "Höhepunkte von Buenos Aires" },
+          "duration": { "en": "4 hours", "de": "4 Stunden" },
+          "time": { "en": "9:00 AM", "de": "9:00 Uhr" },
           "travelers": ["Adrian", "Dorothee"],
-          "description": "Experience the diverse communities of Buenos Aires during a scenic tour. Around the Plaza de Mayo, see the city's major public buildings such as the Cabildo, Buenos Aires Metropolitan Cathedral and the rose-colored presidential palace (Casa Rosada). Visit the Zanjón de Granados, a museum housed above a set of tunnels dating back to Buenos Aires' early settlements. Cap the tour with a stop in La Boca, the city's most colorful neighborhood."
+          "description": {
+            "en": "Experience the diverse communities of Buenos Aires during a scenic tour. Around the Plaza de Mayo, see the city's major public buildings such as the Cabildo, Buenos Aires Metropolitan Cathedral and the rose-colored presidential palace (Casa Rosada). Visit the Zanjón de Granados, a museum housed above a set of tunnels dating back to Buenos Aires' early settlements. Cap the tour with a stop in La Boca, the city's most colorful neighborhood.",
+            "de": "Erleben Sie die vielfältigen Viertel von Buenos Aires bei einer Panoramafahrt. Rund um die Plaza de Mayo sehen Sie wichtige öffentliche Gebäude wie das Cabildo, die Kathedrale von Buenos Aires und den rosafarbenen Präsidentenpalast (Casa Rosada). Besuchen Sie den Zanjón de Granados, ein Museum über einem Tunnelsystem aus den Anfängen der Stadt. Den Abschluss bildet ein Halt in La Boca, dem buntesten Viertel der Stadt."
+          }
         },
         {
-          "title": "Milonga Night",
-          "duration": "4 hours",
-          "time": "8:00 PM",
+          "title": { "en": "Milonga Night", "de": "Milonga-Abend" },
+          "duration": { "en": "4 hours", "de": "4 Stunden" },
+          "time": { "en": "8:00 PM", "de": "20:00 Uhr" },
           "travelers": ["Adrian", "Dorothee"],
-          "description": "Enjoy a night to remember as you mingle with locals and enjoy an evening of dance. The tango is synonymous with Buenos Aires; the dance was added to the UNESCO Intangible Cultural Heritage Lists in 2009. Meet your guide and head to a local club, where the porteños gather together to dance the night away. Take to the floor with a partner, who will show you the steps while a live tango orchestra provides the music."
+          "description": {
+            "en": "Enjoy a night to remember as you mingle with locals and enjoy an evening of dance. The tango is synonymous with Buenos Aires; the dance was added to the UNESCO Intangible Cultural Heritage Lists in 2009. Meet your guide and head to a local club, where the porteños gather together to dance the night away. Take to the floor with a partner, who will show you the steps while a live tango orchestra provides the music.",
+            "de": "Erleben Sie einen unvergesslichen Abend im Kreise der Einheimischen bei einem Abend voller Tanz. Der Tango ist untrennbar mit Buenos Aires verbunden; 2009 wurde er von der UNESCO zum immateriellen Kulturerbe erklärt. Treffen Sie Ihren Guide und besuchen Sie einen lokalen Club, in dem die Porteños die Nacht durchtanzen. Wagen Sie sich mit einem Partner aufs Parkett, der Ihnen die Schritte zeigt, während ein Live-Tango-Orchester spielt."
+          }
         }
       ]
     },
     {
       "date": "2027-02-08",
-      "day": "Mon",
       "type": "disembark",
-      "phase": "Cruise",
-      "location": { "name": "Buenos Aires, Argentina", "lat": -34.6037, "lon": -58.3816 },
-      "title": "Disembark in Buenos Aires",
-      "summary": "Disembark Viking Jupiter in Buenos Aires — end of the cruise.",
+      "location": {
+        "lat": -34.6037, "lon": -58.3816,
+        "name": { "en": "Buenos Aires, Argentina", "de": "Buenos Aires, Argentinien" }
+      },
+      "title": { "en": "Disembark in Buenos Aires", "de": "Ausschiffung in Buenos Aires" },
+      "summary": {
+        "en": "Disembark Viking Jupiter in Buenos Aires — end of the cruise.",
+        "de": "Ausschiffung von der Viking Jupiter in Buenos Aires — Ende der Kreuzfahrt."
+      },
       "showFlights": true
     }
   ]

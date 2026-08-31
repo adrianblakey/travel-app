@@ -3,7 +3,8 @@
 A static web app for sharing a trip itinerary with friends and family: a route map
 (OpenStreetMap via [Leaflet](https://leafletjs.com/)) overlaid with the dates and
 places you'll be, day-by-day detail on excursions when ashore, and background on
-the ship. No login, no backend — just static files.
+the ship. No login, no backend — just static files. Content renders in English
+or German via a switch in the header.
 
 ## Running locally
 
@@ -42,41 +43,61 @@ Each trip lives in its own file under `data/trips/`. The schema isn't
 cruise-specific — a hotel-only or road-trip itinerary can reuse the same
 `days` array with different `type` values, and can simply omit `vessel`.
 
+Any text a visitor reads is **bilingual**: instead of a plain string, it's an
+object with `en` and `de` keys, e.g. `"title": { "en": "...", "de": "..." }`.
+Fields that aren't shown as prose — dates, coordinates, `type`, proper nouns
+like `lodging` (hotel names) — stay plain strings. The `js/app.js` helper
+`t(field)` reads the right language out of a bilingual field, falling back to
+`en` if a `de` key is missing, so a new trip can be added in English only and
+translated later without breaking anything.
+
 ```jsonc
 {
   "id": "slug",
-  "title": "...",
-  "subtitle": "...",
+  "title": { "en": "...", "de": "..." },
+  "subtitle": { "en": "...", "de": "..." },
   "type": "cruise",            // free-form: "cruise", "trip", etc.
   "startDate": "YYYY-MM-DD",
   "endDate": "YYYY-MM-DD",
   "travelers": ["First name", "..."],
+  "flights": { "label": { "en": "...", "de": "..." }, "url": "..." },  // optional
   "vessel": { ... },            // optional — omit for non-cruise trips
   "days": [
     {
       "date": "YYYY-MM-DD",
-      "day": "Mon",
       "type": "port | sea | scenic | hotel | transfer | embark | disembark",
-      "phase": "optional grouping label, e.g. 'Peru Extension'",
-      "location": { "name": "...", "lat": 0, "lon": 0 },
-      "title": "...",
-      "summary": "...",
-      "arrival": "HH:MM or null",
-      "departure": "HH:MM or null",
-      "lodging": "optional hotel name",
+      "location": {
+        "lat": 0, "lon": 0,
+        "name": { "en": "...", "de": "..." }
+      },
+      "title": { "en": "...", "de": "..." },
+      "summary": { "en": "...", "de": "..." },
+      "arrival": "HH:MM",       // omit if not applicable
+      "departure": "HH:MM",     // omit if not applicable
+      "lodging": "optional hotel name (plain string, not translated)",
+      "showFlights": true,      // optional — surfaces the flights link on this day
       "activities": [
         {
-          "title": "...",
-          "duration": "...",
-          "time": "...",
+          "title": { "en": "...", "de": "..." },
+          "duration": { "en": "...", "de": "..." },
+          "time": { "en": "...", "de": "..." },
           "travelers": ["First name", "..."],
-          "description": "..."
+          "description": { "en": "...", "de": "..." }
         }
       ]
     }
   ]
 }
 ```
+
+The weekday abbreviation shown next to each date (e.g. "Sun" / "So") isn't
+stored — it's derived from `date` at render time via
+`Date.prototype.toLocaleDateString`, so it's automatically correct in
+whichever language is selected.
+
+To add a UI language beyond English/German, extend the `UI` dictionary and
+the `.lang-btn` markup in `index.html`; the app doesn't hardcode a
+two-language assumption anywhere except that toggle.
 
 To point the app at a different trip, change `TRIP_URL` at the top of
 `js/app.js`. Multi-trip switching (a picker instead of a hardcoded URL) is a
