@@ -33,10 +33,6 @@ const UI = {
   beam: { en: "Beam", de: "Breite" },
   grossTonnage: { en: "Gross tonnage", de: "Bruttoraumzahl" },
   cruisingSpeed: { en: "Cruising speed", de: "Reisegeschwindigkeit" },
-  footer: {
-    en: "A shared trip itinerary — built for planning, kept for the memories.",
-    de: "Ein gemeinsamer Reiseplan — zur Planung erstellt, für die Erinnerung bewahrt.",
-  },
   copyright: {
     en: "© {year} Adrian Blakey. All rights reserved. This site and its content — text, itinerary details and photos — are the author's own work, shared for personal, non-commercial viewing only. No part of it may be reproduced, republished or used for commercial purposes without prior written permission.",
     de: "© {year} Adrian Blakey. Alle Rechte vorbehalten. Diese Website und ihre Inhalte — Texte, Reisedetails und Fotos — sind das eigene Werk des Autors und werden ausschließlich zur persönlichen, nicht-kommerziellen Ansicht bereitgestellt. Eine Vervielfältigung, Weiterveröffentlichung oder kommerzielle Nutzung ist ohne vorherige schriftliche Genehmigung nicht gestattet.",
@@ -49,7 +45,7 @@ const UI = {
   typeHotel: { en: "On land", de: "An Land" },
   typeTransfer: { en: "Transfer", de: "Transfer" },
   typeExcursion: { en: "Excursion", de: "Ausflug" },
-  legendOnshore: { en: "Onshore — port, embarkation & disembarkation", de: "An Land — Hafen, Ein- & Ausschiffung" },
+  legendOnshore: { en: "Port, embark & disembark", de: "Hafen, Ein- & Ausschiffung" },
   legendSea: { en: "At sea", de: "Auf See" },
   legendScenic: { en: "Scenic sailing", de: "Landschaftliche Fahrt" },
   legendLand: { en: "Pre-cruise — on land", de: "Vor der Kreuzfahrt — an Land" },
@@ -172,7 +168,6 @@ function renderAll() {
   document.querySelector('.tab-btn[data-view="map"]').textContent = tr("tabMap");
   document.querySelector('.tab-btn[data-view="timeline"]').textContent = tr("tabTimeline");
   document.querySelector('.tab-btn[data-view="ship"]').textContent = tr("tabShip");
-  document.getElementById("footer-tagline").textContent = tr("footer");
   document.getElementById("footer-copyright").textContent = tr("copyright").replace(
     "{year}",
     String(new Date().getFullYear())
