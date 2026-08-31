@@ -157,7 +157,7 @@
       "location": {
         "lat": -33.0472, "lon": -71.6127,
         "name": { "en": "Santiago (Valparaíso), Chile", "de": "Santiago (Valparaíso), Chile" },
-        "weatherQuery": "Valparaíso"
+        "weatherQuery": { "en": "Valparaíso", "de": "Valparaíso" }
       },
       "title": { "en": "Transfer to the ship & embark", "de": "Transfer zum Schiff & Einschiffung" },
       "summary": {
@@ -172,7 +172,7 @@
       "location": {
         "lat": -33.0472, "lon": -71.6127,
         "name": { "en": "Santiago (Valparaíso), Chile", "de": "Santiago (Valparaíso), Chile" },
-        "weatherQuery": "Valparaíso"
+        "weatherQuery": { "en": "Valparaíso", "de": "Valparaíso" }
       },
       "title": { "en": "Valparaíso, Chile", "de": "Valparaíso, Chile" },
       "summary": {
@@ -240,7 +240,7 @@
       "location": {
         "lat": -45.5, "lon": -73.7,
         "name": { "en": "Chilean Fjords", "de": "Chilenische Fjorde" },
-        "weatherQuery": "Patagonia"
+        "weatherQuery": { "en": "Patagonia", "de": "Patagonien" }
       },
       "title": { "en": "Scenic Sailing: Chilean Fjords", "de": "Landschaftliche Fahrt: Chilenische Fjorde" },
       "summary": {

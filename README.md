@@ -78,12 +78,16 @@ anything.
       "location": {
         "lat": 0, "lon": 0,
         "name": { "en": "...", "de": "..." },
-        "weatherQuery": "Plain place name"  // optional override for the Wikipedia weather
-                                              // link — used when `name` isn't a clean,
-                                              // searchable place (parentheticals, a region
-                                              // suffix like "X, Sacred Valley, Peru"). Without
-                                              // it, the app defaults to name.en split at the
-                                              // first comma.
+        "weatherQuery": { "en": "...", "de": "..." }  // optional override for the
+                                              // Wikipedia link — used when `name` isn't
+                                              // a clean, searchable article title
+                                              // (parentheticals, a region suffix like
+                                              // "X, Sacred Valley, Peru", or a name that
+                                              // isn't the actual German article title,
+                                              // e.g. "Patagonia" -> "Patagonien"). Without
+                                              // it, the app defaults to name split at the
+                                              // first comma, in whichever language is
+                                              // selected.
       },
       "title": { "en": "...", "de": "..." },
       "summary": { "en": "...", "de": "..." },
@@ -136,7 +140,11 @@ whichever language is selected.
 - **Weather links** on every day's detail panel: a Windy.com link built
   straight from `location.lat`/`lon` (always resolves, since it needs no
   place-name lookup), and a Wikipedia link for climate/seasonal context
-  (see `weatherQuery` above). Both are computed in `js/app.js`
+  (see `weatherQuery` above). The Wikipedia link's edition (`en.wikipedia.org`
+  vs `de.wikipedia.org`) and article name both follow the selected UI
+  language — every slug used here was checked to exist on **both** editions
+  before shipping, since a mismatch (querying `en.wikipedia.org` for a German
+  name, or vice versa) 404s. Both links are computed in `js/app.js`
   (`windyUrl`, `wikipediaUrl`) rather than stored in the trip data. Sea and
   scenic-sailing days get a third link, a Windy "waves" layer, as a shipping
   forecast (`shippingForecastUrl`, gated by `SHIPPING_FORECAST_TYPES`).

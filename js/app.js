@@ -430,12 +430,13 @@ function windyUrl(day) {
 }
 
 function wikipediaUrl(day) {
-  // Always the English Wikipedia, so the query must always be the English
-  // name — t(day.location.name) would pick the German name in German mode
-  // (e.g. "Amalia-Gletscher"), which doesn't exist as an en.wikipedia title.
-  const nameEn = typeof day.location.name === "string" ? day.location.name : day.location.name.en;
-  const query = day.location.weatherQuery || nameEn.split(",")[0].trim();
-  return `https://en.wikipedia.org/wiki/${encodeURIComponent(query.replace(/\s+/g, "_"))}`;
+  // The Wikipedia edition matches the current UI language, so the query
+  // must be the name in that SAME language — mixing them (e.g. querying
+  // en.wikipedia.org for "Amalia-Gletscher") 404s. Every article slug used
+  // here (both editions) was verified to exist before shipping this.
+  const domain = lang === "de" ? "de.wikipedia.org" : "en.wikipedia.org";
+  const query = t(day.location.weatherQuery) || t(day.location.name).split(",")[0].trim();
+  return `https://${domain}/wiki/${encodeURIComponent(query.replace(/\s+/g, "_"))}`;
 }
 
 function shippingForecastUrl(day) {
