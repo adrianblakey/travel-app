@@ -1,10 +1,11 @@
 # travel-app
 
 A static web app for sharing a trip itinerary with friends and family: a route map
-(OpenStreetMap via [Leaflet](https://leafletjs.com/)) overlaid with the dates and
-places you'll be, day-by-day detail on excursions when ashore, and background on
-the ship. No login, no backend — just static files. Content renders in English
-or German via a switch in the header.
+(OpenStreetMap via [Leaflet](https://leafletjs.com/)) with numbered, color-coded
+stops and directional arrows, day-by-day detail on excursions when ashore, and
+background on the ship. Each stop links out to live and seasonal weather. No
+login, no backend — just static files. Content renders in English or German
+via a switch in the header.
 
 ## Running locally
 
@@ -69,7 +70,13 @@ anything.
       "type": "port | sea | scenic | hotel | transfer | embark | disembark | excursion",
       "location": {
         "lat": 0, "lon": 0,
-        "name": { "en": "...", "de": "..." }
+        "name": { "en": "...", "de": "..." },
+        "weatherQuery": "Plain place name"  // optional override for the Wikipedia weather
+                                              // link — used when `name` isn't a clean,
+                                              // searchable place (parentheticals, a region
+                                              // suffix like "X, Sacred Valley, Peru"). Without
+                                              // it, the app defaults to name.en split at the
+                                              // first comma.
       },
       "title": { "en": "...", "de": "..." },
       "summary": { "en": "...", "de": "..." },
@@ -99,6 +106,27 @@ The weekday abbreviation shown next to each date (e.g. "Sun" / "So") isn't
 stored — it's derived from `date` at render time via
 `Date.prototype.toLocaleDateString`, so it's automatically correct in
 whichever language is selected.
+
+## Map features
+
+- **Numbered stops.** Every day gets a numbered marker (1, 2, 3…) in
+  itinerary order, so the sequence of the trip is legible even where the
+  route doubles back on itself.
+- **Color-coded by kind.** Marker color follows `TYPE_COLORS` in
+  `js/app.js`; the on-map legend (bottom-left, `#map-legend`, built by
+  `buildLegend()`) explains what each color means and stays in sync with
+  the language switch. `LEGEND_ITEMS` groups the seven `day.type` values
+  into five legend rows — extend that array if a new `type` needs its own
+  swatch.
+- **Direction-of-travel arrows** are drawn along the route with the
+  [Leaflet.PolylineDecorator](https://github.com/bbecquet/Leaflet.PolylineDecorator)
+  plugin (loaded via CDN in `index.html`). They work automatically because
+  the polyline's vertices are just the days in chronological order.
+- **Weather links** on every day's detail panel: a Windy.com link built
+  straight from `location.lat`/`lon` (always resolves, since it needs no
+  place-name lookup), and a Wikipedia link for climate/seasonal context
+  (see `weatherQuery` above). Both are computed in `js/app.js`
+  (`windyUrl`, `wikipediaUrl`) rather than stored in the trip data.
 
 To add a UI language beyond English/German, extend the `UI` dictionary and
 the `.lang-btn` markup in `index.html`; the app doesn't hardcode a

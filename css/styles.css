@@ -395,10 +395,74 @@ main {
 }
 
 /* Leaflet marker tweaks */
-.trip-marker {
+.trip-marker-icon { background: none; border: none; }
+
+.trip-marker-badge {
   border-radius: 50%;
   border: 2px solid #fff;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  color: #fff;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  line-height: 1;
 }
 
 .leaflet-popup-content-wrapper { border-radius: 8px; }
+
+.map-legend {
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.7rem;
+  color: var(--color-ink);
+  box-shadow: 0 4px 14px rgba(20, 30, 25, 0.14);
+  max-width: 190px;
+  max-height: calc(100% - 1.5rem);
+  overflow-y: auto;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.1rem 0;
+  line-height: 1.25;
+}
+
+.legend-swatch {
+  flex: 0 0 auto;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1.5px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+.weather-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 0.9rem;
+}
+
+.weather-link {
+  font-size: 0.76rem;
+  text-decoration: none;
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+}
+
+.weather-link:hover {
+  background: var(--color-accent);
+  color: #fff;
+}

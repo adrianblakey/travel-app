@@ -49,6 +49,13 @@ const UI = {
   typeHotel: { en: "On land", de: "An Land" },
   typeTransfer: { en: "Transfer", de: "Transfer" },
   typeExcursion: { en: "Excursion", de: "Ausflug" },
+  legendOnshore: { en: "Onshore — port, embarkation & disembarkation", de: "An Land — Hafen, Ein- & Ausschiffung" },
+  legendSea: { en: "At sea", de: "Auf See" },
+  legendScenic: { en: "Scenic sailing", de: "Landschaftliche Fahrt" },
+  legendLand: { en: "Pre-cruise — on land", de: "Vor der Kreuzfahrt — an Land" },
+  legendExcursion: { en: "Excursion", de: "Ausflug" },
+  weatherNow: { en: "Current & forecast (Windy)", de: "Aktuell & Vorhersage (Windy)" },
+  weatherTypical: { en: "Climate & typical weather (Wikipedia)", de: "Klima & typisches Wetter (Wikipedia)" },
 };
 
 const TYPE_LABEL_KEYS = {
@@ -61,6 +68,14 @@ const TYPE_LABEL_KEYS = {
   transfer: "typeTransfer",
   excursion: "typeExcursion",
 };
+
+const LEGEND_ITEMS = [
+  { color: TYPE_COLORS.port, key: "legendOnshore" },
+  { color: TYPE_COLORS.hotel, key: "legendLand" },
+  { color: TYPE_COLORS.excursion, key: "legendExcursion" },
+  { color: TYPE_COLORS.scenic, key: "legendScenic" },
+  { color: TYPE_COLORS.sea, key: "legendSea" },
+];
 
 let trip = null;
 let map = null;
@@ -132,6 +147,7 @@ function renderAll() {
 
   buildFlightsLink();
   updateMapLabels();
+  buildLegend();
   buildTimeline();
   buildShipInfo();
 
@@ -174,7 +190,7 @@ function buildMap() {
 
   const latlngs = trip.days.map((d) => [d.location.lat, d.location.lon]);
 
-  L.polyline(latlngs, {
+  const routeLine = L.polyline(latlngs, {
     color: "#1d6f5e",
     weight: 2.5,
     opacity: 0.75,
@@ -182,18 +198,37 @@ function buildMap() {
     lineCap: "round",
   }).addTo(map);
 
+  // Arrowheads along the route show direction of travel (vertices are in
+  // chronological day order, so each arrow points from earlier to later).
+  if (window.L && L.polylineDecorator) {
+    L.polylineDecorator(routeLine, {
+      patterns: [
+        {
+          offset: "4%",
+          repeat: "9%",
+          symbol: L.Symbol.arrowHead({
+            pixelSize: 9,
+            headAngle: 50,
+            pathOptions: { color: "#1d6f5e", fillOpacity: 0.9, weight: 0 },
+          }),
+        },
+      ],
+    }).addTo(map);
+  }
+
   trip.days.forEach((day, index) => {
     const color = TYPE_COLORS[day.type] || "#555";
-    const marker = L.circleMarker([day.location.lat, day.location.lon], {
-      radius: day.type === "sea" ? 5 : 8,
-      fillColor: color,
-      color: "#fff",
-      weight: 2,
-      fillOpacity: 0.95,
-      className: "trip-marker",
-    }).addTo(map);
+    const isSea = day.type === "sea";
+    const size = isSea ? 20 : 27;
+    const icon = L.divIcon({
+      className: "trip-marker-icon",
+      html: `<div class="trip-marker-badge" style="background:${color};width:${size}px;height:${size}px;font-size:${isSea ? 10 : 12}px;">${index + 1}</div>`,
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2],
+    });
+    const marker = L.marker([day.location.lat, day.location.lon], { icon }).addTo(map);
 
-    marker.bindTooltip("", { direction: "top", offset: [0, -6] });
+    marker.bindTooltip("", { direction: "top", offset: [0, -(size / 2 + 2)] });
     marker.on("click", () => openDayPanel(index));
     dayLayers.push(marker);
   });
@@ -205,8 +240,19 @@ function buildMap() {
 function updateMapLabels() {
   trip.days.forEach((day, index) => {
     const marker = dayLayers[index];
-    marker.setTooltipContent(`${shortDate(day.date)} — ${t(day.title)}`);
+    marker.setTooltipContent(`${index + 1}. ${shortDate(day.date)} — ${t(day.title)}`);
   });
+}
+
+function buildLegend() {
+  const el = document.getElementById("map-legend");
+  el.innerHTML = LEGEND_ITEMS.map(
+    (item) => `
+      <div class="legend-row">
+        <span class="legend-swatch" style="background:${item.color}"></span>
+        <span>${tr(item.key)}</span>
+      </div>`
+  ).join("");
 }
 
 function lodgingHtml(lodging) {
@@ -215,6 +261,25 @@ function lodgingHtml(lodging) {
     return `<a href="${lodging.url}" target="_blank" rel="noopener">${escapeHtml(lodging.name)}</a>`;
   }
   return escapeHtml(lodging.name);
+}
+
+function windyUrl(day) {
+  return `https://www.windy.com/?${day.location.lat.toFixed(3)},${day.location.lon.toFixed(3)},8`;
+}
+
+function wikipediaUrl(day) {
+  // Wikipedia has a climate section for almost any real place, and degrades
+  // gracefully (a search-suggestion page, never a dead link) if it doesn't.
+  const query = day.location.weatherQuery || t(day.location.name).split(",")[0].trim();
+  return `https://en.wikipedia.org/wiki/${encodeURIComponent(query.replace(/\s+/g, "_"))}`;
+}
+
+function weatherLinksHtml(day) {
+  const links = [
+    `<a class="weather-link" href="${windyUrl(day)}" target="_blank" rel="noopener">🌬 ${tr("weatherNow")}</a>`,
+    `<a class="weather-link" href="${wikipediaUrl(day)}" target="_blank" rel="noopener">📖 ${tr("weatherTypical")}</a>`,
+  ];
+  return `<div class="weather-links">${links.join("")}</div>`;
 }
 
 function openDayPanel(index) {
@@ -253,6 +318,7 @@ function openDayPanel(index) {
     ${day.lodging ? `<p class="lodging-note">${tr("stayingAt")} ${lodgingHtml(day.lodging)}</p>` : ""}
     ${day.showFlights && trip.flights ? `<p class="lodging-note"><a href="${trip.flights.url}" target="_blank" rel="noopener">✈ ${escapeHtml(trip.flights.label ? t(trip.flights.label) : tr("flightsFallback"))} &rarr;</a></p>` : ""}
     ${day.note ? `<p class="day-note">${escapeHtml(t(day.note))}</p>` : ""}
+    ${weatherLinksHtml(day)}
     ${activitiesHtml}
   `;
 
