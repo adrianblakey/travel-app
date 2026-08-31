@@ -229,6 +229,27 @@ To add a UI language beyond English/German, extend the `UI` dictionary and
 the `.lang-btn` markup in `index.html`; the app doesn't hardcode a
 two-language assumption anywhere except that toggle.
 
+## Calendar
+
+The Calendar tab shows a month grid with a colored dot on every date that
+falls on a trip day, across **all** trips in the manifest — not just the one
+currently loaded. This is built from `dateIndex`, a `Map<"YYYY-MM-DD",
+Array<{tripId, dayIndex, type}>>` populated once at startup by
+`buildDateIndex()` (it fetches every trip file in the manifest just to read
+their `days[].date` values). A date input lets you jump straight to a date;
+clicking a marked date does the same. Either one opens that day's panel on
+the map, switching to that day's trip first via `loadTrip()` if it isn't the
+one currently showing (`goToDate()`).
+
+Days that fall on the currently-loaded trip get an outlined cell
+(`.current-trip`); any trip day gets a colored dot matching its `type`
+(`TYPE_COLORS`, same palette as the map markers and legend). Switching trips
+via the header dropdown jumps the calendar to that trip's start month;
+searching or clicking a date instead jumps to that date's own month — see
+the comment on `calendarViewDate` resets in `setupTripSwitcher()` vs.
+`goToDate()` if touching this logic, since the two "reset the visible month"
+paths are easy to make fight each other.
+
 ## App version
 
 The footer shows a small `v<N>` before the copyright line, from the

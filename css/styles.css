@@ -429,6 +429,136 @@ main {
 
 .timeline-item:hover .excursion-link { color: var(--color-ink); }
 
+/* Calendar */
+#view-calendar {
+  overflow-y: auto;
+  height: 100%;
+}
+
+.calendar-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  max-width: 480px;
+  margin: 1.25rem auto 0;
+  padding: 0 1.25rem;
+}
+
+.calendar-search label {
+  font-size: 0.82rem;
+  color: var(--color-muted);
+}
+
+.calendar-search input[type="date"] {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.85rem;
+  font-family: var(--font-sans);
+}
+
+.calendar-search button {
+  border: 1px solid var(--color-accent);
+  background: var(--color-accent);
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.calendar-search button:hover { opacity: 0.9; }
+
+.calendar-search-result {
+  max-width: 480px;
+  margin: 0.5rem auto 0;
+  padding: 0 1.25rem;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.1rem 0 0.5rem;
+}
+
+.calendar-nav button {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  border-radius: 999px;
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.calendar-nav button:hover { background: var(--color-accent-soft); }
+
+.calendar-month-label {
+  font-weight: 600;
+  min-width: 10rem;
+  text-align: center;
+}
+
+.calendar-grid {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 1.25rem 1.5rem;
+}
+
+.calendar-weekdays,
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-weekdays {
+  font-size: 0.72rem;
+  color: var(--color-muted);
+  text-align: center;
+  margin-bottom: 0.3rem;
+}
+
+.calendar-cell {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.calendar-cell.empty { visibility: hidden; }
+
+.calendar-cell.has-trip {
+  cursor: pointer;
+  background: var(--color-accent-soft);
+}
+
+.calendar-cell.has-trip:hover { background: var(--color-accent); color: #fff; }
+
+.calendar-cell.current-trip {
+  border: 1.5px solid var(--color-accent);
+}
+
+.calendar-dot {
+  position: absolute;
+  bottom: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
 .type-badge {
   display: inline-block;
   font-size: 0.7rem;

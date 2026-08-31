@@ -1,5 +1,5 @@
 // Bump this by 1 with every commit that changes the app (shown in the footer).
-const APP_VERSION = 3;
+const APP_VERSION = 4;
 
 const TRIPS_INDEX_URL = "data/trips/index.json";
 
@@ -19,7 +19,13 @@ const UI = {
   loading: { en: "Loading trip…", de: "Reise wird geladen…" },
   tabMap: { en: "Route Map", de: "Karte" },
   tabTimeline: { en: "Day by Day", de: "Tag für Tag" },
+  tabCalendar: { en: "Calendar", de: "Kalender" },
   tabShip: { en: "The Ship", de: "Das Schiff" },
+  calendarSearchLabel: { en: "Jump to a date", de: "Zu Datum springen" },
+  calendarSearchBtn: { en: "Go", de: "Los" },
+  calendarNoTrip: { en: "No trip on this date.", de: "Keine Reise an diesem Datum." },
+  calendarPrevMonth: { en: "Previous month", de: "Vorheriger Monat" },
+  calendarNextMonth: { en: "Next month", de: "Nächster Monat" },
   flightsFallback: { en: "Flights", de: "Flüge" },
   flightsTbd: { en: "not yet booked", de: "noch nicht gebucht" },
   arrive: { en: "Arrive", de: "Ankunft" },
@@ -126,6 +132,12 @@ let lang = "en";
 let tripManifest = [];
 let currentTripId = null;
 
+// Flat index of every day across every trip in the manifest, built once at
+// startup so the calendar can mark/find trip days without switching which
+// trip is currently loaded. Map<"YYYY-MM-DD", Array<{ tripId, dayIndex, type }>>.
+let dateIndex = new Map();
+let calendarViewDate = null; // first-of-month Date currently shown in the calendar grid
+
 try {
   const saved = localStorage.getItem("tripLang");
   if (saved === "en" || saved === "de") lang = saved;
@@ -150,7 +162,27 @@ async function init() {
   setupLangToggle();
   setupTabs();
   setupTripSwitcher();
+  setupCalendarControls();
   await loadTrip(initialEntry);
+
+  // Fetches every trip's own JSON just to index its days' dates — done once,
+  // after the initial trip is already showing, so it never blocks first
+  // paint. The calendar re-renders once this resolves to pick up the dots.
+  await buildDateIndex();
+  buildCalendar();
+}
+
+async function buildDateIndex() {
+  const tripsData = await Promise.all(
+    tripManifest.map((entry) => fetch(`data/trips/${entry.file}`).then((r) => r.json()))
+  );
+  dateIndex = new Map();
+  tripsData.forEach((tripData) => {
+    tripData.days.forEach((day, dayIndex) => {
+      if (!dateIndex.has(day.date)) dateIndex.set(day.date, []);
+      dateIndex.get(day.date).push({ tripId: tripData.id, dayIndex, type: day.type });
+    });
+  });
 }
 
 function setupTripSwitcher() {
@@ -160,7 +192,13 @@ function setupTripSwitcher() {
     .join("");
   select.addEventListener("change", () => {
     const entry = tripManifest.find((e) => e.id === select.value);
-    if (entry) loadTrip(entry);
+    if (entry) {
+      // Explicit trip switch via the dropdown — jump the calendar to this
+      // trip's own start month. (goToDate() sets calendarViewDate itself
+      // before triggering a trip switch, so this doesn't run in that case.)
+      calendarViewDate = null;
+      loadTrip(entry);
+    }
   });
 }
 
@@ -240,15 +278,21 @@ function renderAll() {
 
   document.querySelector('.tab-btn[data-view="map"]').textContent = tr("tabMap");
   document.querySelector('.tab-btn[data-view="timeline"]').textContent = tr("tabTimeline");
+  document.querySelector('.tab-btn[data-view="calendar"]').textContent = tr("tabCalendar");
   document.querySelector('.tab-btn[data-view="ship"]').textContent = tr("tabShip");
   document.getElementById("footer-copyright").textContent =
     `v${APP_VERSION} · ` + tr("copyright").replace("{year}", String(new Date().getFullYear()));
   updateTripSelectLabels();
+  document.getElementById("calendar-search-label").textContent = tr("calendarSearchLabel");
+  document.getElementById("calendar-search-btn").textContent = tr("calendarSearchBtn");
+  document.getElementById("calendar-prev").setAttribute("aria-label", tr("calendarPrevMonth"));
+  document.getElementById("calendar-next").setAttribute("aria-label", tr("calendarNextMonth"));
 
   buildFlightsLink();
   updateMapLabels();
   buildLegend();
   buildTimeline();
+  buildCalendar();
   buildShipInfo();
   updateAisLabels();
 
@@ -850,6 +894,118 @@ function buildTimeline() {
       openDayPanel(index);
     });
   });
+}
+
+function setupCalendarControls() {
+  document.getElementById("calendar-prev").addEventListener("click", () => {
+    calendarViewDate.setMonth(calendarViewDate.getMonth() - 1);
+    buildCalendar();
+  });
+  document.getElementById("calendar-next").addEventListener("click", () => {
+    calendarViewDate.setMonth(calendarViewDate.getMonth() + 1);
+    buildCalendar();
+  });
+  document.getElementById("calendar-search-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const iso = document.getElementById("calendar-search-input").value;
+    if (!iso) return;
+    const resultEl = document.getElementById("calendar-search-result");
+    const matches = dateIndex.get(iso);
+    if (!matches || !matches.length) {
+      resultEl.textContent = tr("calendarNoTrip");
+      resultEl.hidden = false;
+      return;
+    }
+    resultEl.hidden = true;
+    const [y, m, d] = iso.split("-").map(Number);
+    calendarViewDate = new Date(y, m - 1, 1);
+    buildCalendar();
+    goToDate(iso);
+  });
+}
+
+function weekdayShortLabels() {
+  const monday = new Date(2023, 0, 2); // a known Monday
+  const fmt = new Intl.DateTimeFormat(localeTag(), { weekday: "short" });
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return fmt.format(d);
+  });
+}
+
+function buildCalendar() {
+  const grid = document.getElementById("calendar-grid");
+  const label = document.getElementById("calendar-month-label");
+  if (!calendarViewDate) {
+    calendarViewDate = new Date(trip.startDate + "T00:00:00");
+    calendarViewDate.setDate(1);
+  }
+  const year = calendarViewDate.getFullYear();
+  const month = calendarViewDate.getMonth();
+
+  label.textContent = calendarViewDate.toLocaleDateString(localeTag(), { month: "long", year: "numeric" });
+
+  const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7; // 0=Mon..6=Sun
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  let cellsHtml = "";
+  for (let i = 0; i < firstWeekday; i++) {
+    cellsHtml += `<div class="calendar-cell empty"></div>`;
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const iso = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    const matches = dateIndex.get(iso) || [];
+    const isCurrentTrip = trip && matches.some((m) => m.tripId === trip.id);
+    const dotColor = matches.length ? TYPE_COLORS[matches[0].type] || "#555" : null;
+    const classes = ["calendar-cell"];
+    if (matches.length) classes.push("has-trip");
+    if (isCurrentTrip) classes.push("current-trip");
+    cellsHtml += `
+      <div class="${classes.join(" ")}" data-date="${iso}"${matches.length ? ' role="button" tabindex="0"' : ""}>
+        <span class="calendar-daynum">${d}</span>
+        ${dotColor ? `<span class="calendar-dot" style="background:${dotColor}"></span>` : ""}
+      </div>`;
+  }
+
+  grid.innerHTML = `
+    <div class="calendar-weekdays">${weekdayShortLabels().map((w) => `<div>${escapeHtml(w)}</div>`).join("")}</div>
+    <div class="calendar-days">${cellsHtml}</div>
+  `;
+
+  grid.querySelectorAll(".calendar-cell.has-trip").forEach((cell) => {
+    cell.addEventListener("click", () => goToDate(cell.dataset.date));
+    cell.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        goToDate(cell.dataset.date);
+      }
+    });
+  });
+}
+
+// Jumps to a specific date: switches to that date's trip first if it isn't
+// the one currently loaded, then opens that day's panel on the map — the
+// same landing behaviour as clicking a day in the timeline.
+function goToDate(iso) {
+  const matches = dateIndex.get(iso);
+  if (!matches || !matches.length) return;
+  const match = matches[0];
+
+  const openMatchedDay = () => {
+    document.querySelector('.tab-btn[data-view="map"]').click();
+    const day = trip.days[match.dayIndex];
+    map.setView([day.location.lat, day.location.lon], Math.max(map.getZoom(), 6), { animate: true });
+    openDayPanel(match.dayIndex);
+  };
+
+  if (match.tripId !== trip.id) {
+    const entry = tripManifest.find((e) => e.id === match.tripId);
+    if (!entry) return;
+    loadTrip(entry).then(openMatchedDay);
+  } else {
+    openMatchedDay();
+  }
 }
 
 function buildShipInfo() {
