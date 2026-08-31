@@ -442,6 +442,12 @@ main {
   color: var(--color-muted);
 }
 
+.stat-card .stat-sub {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--color-muted);
+}
+
 .ship-info ul {
   padding-left: 1.2rem;
   line-height: 1.6;

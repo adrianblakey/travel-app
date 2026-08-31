@@ -61,7 +61,9 @@ const UI = {
   stateroomCategory: { en: "Category", de: "Kategorie" },
   stateroomCabin: { en: "Cabin number", de: "Kabinennummer" },
   stateroomCabinTbd: { en: "To be assigned", de: "Wird noch zugeteilt" },
-  stateroomDeck: { en: "Typical deck for this category", de: "Übliches Deck für diese Kategorie" },
+  stateroomDeck: { en: "Deck for this category", de: "Deck für diese Kategorie" },
+  stateroomSize: { en: "Size", de: "Größe" },
+  stateroomBed: { en: "Bed", de: "Bett" },
   deckPlanLink: { en: "View deck plan (PDF) →", de: "Deckplan ansehen (PDF) →" },
   aisToggleTitle: { en: "Show nearby ships (AIS)", de: "Schiffe in der Nähe zeigen (AIS)" },
   aisPanelTitle: { en: "Ships nearby", de: "Schiffe in der Nähe" },
@@ -688,12 +690,15 @@ function buildShipInfo() {
 function stateroomHtml() {
   const s = trip.stateroom;
   if (!s) return "";
+  const sizeValue = s.sizeSqFt ? `${s.sizeSqFt} ft² <span class="stat-sub">(${s.sizeM2} m²)</span>` : null;
   return `
     <h3>${tr("ourStateroom")}</h3>
     <div class="ship-stats">
       <div class="stat-card"><div class="stat-value">${escapeHtml(s.category)}</div><div class="stat-label">${tr("stateroomCategory")}</div></div>
       <div class="stat-card"><div class="stat-value">${s.cabinNumber ? escapeHtml(s.cabinNumber) : tr("stateroomCabinTbd")}</div><div class="stat-label">${tr("stateroomCabin")}</div></div>
       <div class="stat-card"><div class="stat-value">${escapeHtml(s.typicalDeck)}</div><div class="stat-label">${tr("stateroomDeck")}</div></div>
+      ${sizeValue ? `<div class="stat-card"><div class="stat-value">${sizeValue}</div><div class="stat-label">${tr("stateroomSize")}</div></div>` : ""}
+      ${s.bed ? `<div class="stat-card"><div class="stat-value">${escapeHtml(t(s.bed))}</div><div class="stat-label">${tr("stateroomBed")}</div></div>` : ""}
     </div>
     ${s.note ? `<p class="source-note">${escapeHtml(t(s.note))}</p>` : ""}
     ${s.deckPlanUrl ? `<p><a href="${s.deckPlanUrl}" target="_blank" rel="noopener">${tr("deckPlanLink")}</a></p>` : ""}

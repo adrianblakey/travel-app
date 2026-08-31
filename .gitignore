@@ -219,8 +219,7 @@ __marimo__/
 
 # Personal trip documents (booking refs, payment/personal info) - never commit source docs
 *.pdf
-/data/raw/
-/data/private/
+/docs/
 
 # Build output
 /dist/
