@@ -91,19 +91,63 @@ body {
 
 .header-title .trip-countdown:empty { display: none; }
 
-.trip-reminders {
-  padding: 0 1.1rem 0.6rem;
+.reminder-bell-wrap {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
 }
 
-.reminder-banner {
-  margin: 0.35rem 0 0;
-  padding: 0.5rem 0.75rem;
-  background: #fdf3d9;
-  border: 1px solid #e8c96a;
-  border-radius: 8px;
-  font-size: 0.82rem;
-  color: var(--color-ink);
+.reminder-bell {
+  border: none;
+  background: none;
+  font-size: 1.15rem;
+  line-height: 1;
+  padding: 0.2rem 0.3rem;
+  cursor: pointer;
 }
+
+.reminder-bell::after {
+  content: "";
+  position: absolute;
+  top: 0.15rem;
+  right: 0.2rem;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-excursion);
+  border: 1.5px solid var(--color-surface);
+}
+
+.reminder-tooltip {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.4rem;
+  width: max-content;
+  max-width: 280px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(20, 30, 25, 0.16);
+  padding: 0.6rem 0.75rem;
+  font-size: 0.8rem;
+  color: var(--color-ink);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 1200;
+}
+
+.reminder-bell-wrap:hover .reminder-tooltip,
+.reminder-bell-wrap:focus-within .reminder-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.reminder-tooltip p { margin: 0 0 0.4rem; }
+.reminder-tooltip p:last-child { margin-bottom: 0; }
 
 .header-tabs {
   display: flex;

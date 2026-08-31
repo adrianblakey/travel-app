@@ -1,5 +1,5 @@
 // Bump this by 1 with every commit that changes the app (shown in the footer).
-const APP_VERSION = 5;
+const APP_VERSION = 6;
 
 const TRIPS_INDEX_URL = "data/trips/index.json";
 
@@ -36,10 +36,10 @@ const UI = {
   daysToGo: { en: "{n} days to go", de: "Noch {n} Tage" },
   oneDayToGo: { en: "1 day to go", de: "Noch 1 Tag" },
   dayOfTrip: { en: "Day {day} of {total}", de: "Tag {day} von {total}" },
-  tripCompleted: { en: "Trip completed", de: "Reise abgeschlossen" },
   reminderToday: { en: "today", de: "heute" },
   reminderInOneDay: { en: "in 1 day", de: "in 1 Tag" },
   reminderInDays: { en: "in {n} days", de: "in {n} Tagen" },
+  remindersLabel: { en: "Reminders", de: "Erinnerungen" },
   excursion: { en: "excursion", de: "Ausflug" },
   excursions: { en: "excursions", de: "Ausflüge" },
   highlights: { en: "Highlights", de: "Highlights" },
@@ -382,35 +382,42 @@ function buildCountdown() {
     const totalDays = Math.round((end - start) / msPerDay) + 1;
     el.textContent = tr("dayOfTrip").replace("{day}", dayNum).replace("{total}", totalDays);
   } else {
-    el.textContent = tr("tripCompleted");
+    // Trip is over — clear the badge entirely rather than leaving a
+    // "completed" label showing forever; the :empty CSS rule hides it.
+    el.textContent = "";
   }
 }
 
-// Shows reminders whose date/time hasn't passed yet. Dates are stored as
-// full ISO timestamps with an explicit UTC offset (e.g. a booking window
-// that opens at a specific real-world clock time, not "sometime that day"),
-// so comparisons and the displayed time both use UTC — matching GMT exactly
-// for the November dates these are used for, since GMT has no DST offset.
+// Populates the header bell's hover tooltip with reminders whose date/time
+// hasn't passed yet (the bell itself is hidden once there are none left).
+// Dates are stored as full ISO timestamps with an explicit UTC offset (e.g.
+// a booking window that opens at a specific real-world clock time, not
+// "sometime that day"), so comparisons and the displayed time both use UTC
+// — matching GMT exactly for the November dates these are used for, since
+// GMT has no DST offset.
 function buildReminders() {
-  const container = document.getElementById("trip-reminders");
+  const wrap = document.getElementById("reminder-bell-wrap");
+  const tooltip = document.getElementById("reminder-tooltip");
+  document.getElementById("reminder-bell").setAttribute("aria-label", tr("remindersLabel"));
+
   const reminders = trip.reminders || [];
   const now = new Date();
   const upcoming = reminders.filter((r) => new Date(r.date) > now);
 
   if (!upcoming.length) {
-    container.hidden = true;
-    container.innerHTML = "";
+    wrap.hidden = true;
+    tooltip.innerHTML = "";
     return;
   }
 
-  container.hidden = false;
-  container.innerHTML = upcoming
+  wrap.hidden = false;
+  tooltip.innerHTML = upcoming
     .map((r) => {
       const target = new Date(r.date);
       const days = Math.ceil((target - now) / 86400000);
       const countdown =
         days <= 0 ? tr("reminderToday") : days === 1 ? tr("reminderInOneDay") : tr("reminderInDays").replace("{n}", days);
-      return `<p class="reminder-banner">⏰ ${escapeHtml(t(r.label))} — ${escapeHtml(formatReminderDateTime(r.date))} (${escapeHtml(countdown)})</p>`;
+      return `<p>${escapeHtml(t(r.label))} — ${escapeHtml(formatReminderDateTime(r.date))} (${escapeHtml(countdown)})</p>`;
     })
     .join("");
 }

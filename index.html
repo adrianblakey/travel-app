@@ -17,6 +17,12 @@
         <p id="trip-countdown" class="trip-countdown"></p>
       </div>
       <div class="header-controls">
+        <div class="reminder-bell-wrap" id="reminder-bell-wrap" hidden>
+          <button type="button" id="reminder-bell" class="reminder-bell" aria-label="Reminders">
+            <span aria-hidden="true">🔔</span>
+          </button>
+          <div id="reminder-tooltip" class="reminder-tooltip" role="tooltip"></div>
+        </div>
         <select id="trip-select" class="trip-select" aria-label="Trip"></select>
         <div class="lang-switch" role="group" aria-label="Language / Sprache">
           <button class="lang-btn" data-lang="en">EN</button>
@@ -31,7 +37,6 @@
       <button class="tab-btn" data-view="ship">The Ship</button>
       <a id="flights-link" class="tab-btn flights-link" href="#" target="_blank" rel="noopener" hidden></a>
     </nav>
-    <div id="trip-reminders" class="trip-reminders" hidden></div>
   </header>
 
   <main>

@@ -285,9 +285,21 @@ the back-button history.
 ## Trip countdown
 
 The header shows a small badge under the title/subtitle: "N days to go"
-before the trip starts, "Day N of M" while it's underway, or "Trip
-completed" after — computed from `trip.startDate`/`endDate` against today's
-date at render time (`buildCountdown()`). No stored state; it's always live.
+before the trip starts, or "Day N of M" while it's underway — computed from
+`trip.startDate`/`endDate` against today's date at render time
+(`buildCountdown()`). No stored state; it's always live. Once the trip is
+over the badge clears itself entirely (empty text, hidden by the `:empty`
+CSS rule) rather than leaving a "completed" label showing forever.
+
+## Reminders
+
+A trip's optional `reminders` (see the schema above) show as a small 🔔 in
+the header, next to the trip switcher — visible only while at least one
+reminder hasn't passed yet, with a small dot marking it as active. Hovering
+(or focusing, for keyboard use) shows the reminder text, its deadline, and a
+live "in N days" countdown in a tooltip (`buildReminders()`); there's no
+persistent banner, so it stays out of the way until you actually want to
+check it.
 
 ## App version
 
