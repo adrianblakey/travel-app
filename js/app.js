@@ -348,18 +348,74 @@ function buildLegend() {
   `;
 }
 
-// Legend starts expanded; tapping/clicking it toggles a collapsed state
-// (just the "Legend" label visible) so it can be tucked out of the way.
-const mapLegendEl = document.getElementById("map-legend");
-mapLegendEl.addEventListener("click", (e) => {
-  e.currentTarget.classList.toggle("collapsed");
-});
-mapLegendEl.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" || e.key === " ") {
-    e.preventDefault();
-    e.currentTarget.classList.toggle("collapsed");
+// Legend starts expanded and can be dragged (mouse or touch) anywhere over
+// the map; a tap/click that doesn't move it toggles the collapsed state
+// (just the "Legend" label visible) instead.
+function setupLegendInteractions() {
+  const el = document.getElementById("map-legend");
+  const container = document.getElementById("map");
+  let dragging = false;
+  let moved = false;
+  let startX = 0;
+  let startY = 0;
+  let startLeft = 0;
+  let startTop = 0;
+
+  el.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    dragging = true;
+    moved = false;
+    const rect = el.getBoundingClientRect();
+    const mapRect = container.getBoundingClientRect();
+    startLeft = rect.left - mapRect.left;
+    startTop = rect.top - mapRect.top;
+    startX = e.clientX;
+    startY = e.clientY;
+    el.setPointerCapture(e.pointerId);
+  });
+
+  el.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if (!moved && Math.hypot(dx, dy) > 5) {
+      moved = true;
+      el.classList.add("dragging");
+    }
+    if (!moved) return;
+    const mapRect = container.getBoundingClientRect();
+    const maxLeft = Math.max(0, mapRect.width - el.offsetWidth);
+    const maxTop = Math.max(0, mapRect.height - el.offsetHeight);
+    el.style.left = `${Math.min(Math.max(startLeft + dx, 0), maxLeft)}px`;
+    el.style.top = `${Math.min(Math.max(startTop + dy, 0), maxTop)}px`;
+    el.style.bottom = "auto";
+  });
+
+  function endDrag(e) {
+    if (!dragging) return;
+    dragging = false;
+    el.classList.remove("dragging");
+    if (!moved) {
+      el.classList.toggle("collapsed");
+    }
+    try {
+      el.releasePointerCapture(e.pointerId);
+    } catch (err) {
+      /* already released */
+    }
   }
-});
+
+  el.addEventListener("pointerup", endDrag);
+  el.addEventListener("pointercancel", endDrag);
+
+  el.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      el.classList.toggle("collapsed");
+    }
+  });
+}
+setupLegendInteractions();
 
 function lodgingHtml(lodging) {
   if (typeof lodging === "string") return escapeHtml(lodging);
