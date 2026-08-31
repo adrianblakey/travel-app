@@ -25,6 +25,7 @@ const UI = {
   excursions: { en: "excursions", de: "Ausflüge" },
   highlights: { en: "Highlights", de: "Highlights" },
   moreInfo: { en: "More on viking.com →", de: "Mehr auf viking.com →" },
+  moreInfoShipsAtSea: { en: "Photos & specs on shipsatsea.de →", de: "Fotos & Daten auf shipsatsea.de →" },
   guests: { en: "Guests", de: "Gäste" },
   crew: { en: "Crew", de: "Besatzung" },
   staterooms: { en: "Staterooms", de: "Kabinen" },
@@ -50,6 +51,7 @@ const UI = {
   legendScenic: { en: "Scenic sailing", de: "Landschaftliche Fahrt" },
   legendLand: { en: "Pre-cruise — on land", de: "Vor der Kreuzfahrt — an Land" },
   legendExcursion: { en: "Excursion", de: "Ausflug" },
+  legendLabel: { en: "Legend", de: "Legende" },
   weatherNow: { en: "Current & forecast (Windy)", de: "Aktuell & Vorhersage (Windy)" },
   weatherTypical: { en: "Climate & typical weather (Wikipedia)", de: "Klima & typisches Wetter (Wikipedia)" },
   shippingForecast: { en: "Shipping forecast — waves (Windy)", de: "Seewetterbericht — Wellen (Windy)" },
@@ -333,14 +335,31 @@ function updateMapLabels() {
 
 function buildLegend() {
   const el = document.getElementById("map-legend");
-  el.innerHTML = LEGEND_ITEMS.map(
+  const rows = LEGEND_ITEMS.map(
     (item) => `
       <div class="legend-row">
         <span class="legend-swatch" style="background:${item.color}"></span>
         <span>${tr(item.key)}</span>
       </div>`
   ).join("");
+  el.innerHTML = `
+    <div class="legend-label">${tr("legendLabel")}</div>
+    <div class="legend-rows">${rows}</div>
+  `;
 }
+
+// Legend starts expanded; tapping/clicking it toggles a collapsed state
+// (just the "Legend" label visible) so it can be tucked out of the way.
+const mapLegendEl = document.getElementById("map-legend");
+mapLegendEl.addEventListener("click", (e) => {
+  e.currentTarget.classList.toggle("collapsed");
+});
+mapLegendEl.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    e.currentTarget.classList.toggle("collapsed");
+  }
+});
 
 function lodgingHtml(lodging) {
   if (typeof lodging === "string") return escapeHtml(lodging);
@@ -513,6 +532,7 @@ function buildShipInfo() {
     <h3>${tr("highlights")}</h3>
     <ul>${v.highlights.map((h) => `<li>${escapeHtml(t(h))}</li>`).join("")}</ul>
     <p><a href="${v.moreInfoUrl}" target="_blank" rel="noopener">${tr("moreInfo")}</a></p>
+    ${v.shipsAtSeaUrl ? `<p><a href="${v.shipsAtSeaUrl}" target="_blank" rel="noopener">${tr("moreInfoShipsAtSea")}</a></p>` : ""}
     <p class="source-note">${escapeHtml(t(v.sourceNote))}</p>
     ${stateroomHtml()}
   `;
