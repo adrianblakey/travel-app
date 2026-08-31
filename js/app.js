@@ -1,4 +1,7 @@
-const TRIP_URL = "data/trips/peru-south-america-2027.json";
+// Bump this by 1 with every commit that changes the app (shown in the footer).
+const APP_VERSION = 1;
+
+const TRIPS_INDEX_URL = "data/trips/index.json";
 
 const TYPE_COLORS = {
   port: "#1d6f5e",
@@ -49,7 +52,7 @@ const UI = {
   legendOnshore: { en: "Port, embark & disembark", de: "Hafen, Ein- & Ausschiffung" },
   legendSea: { en: "At sea", de: "Auf See" },
   legendScenic: { en: "Scenic sailing", de: "Landschaftliche Fahrt" },
-  legendLand: { en: "Pre-cruise — on land", de: "Vor der Kreuzfahrt — an Land" },
+  legendLand: { en: "On land", de: "An Land" },
   legendExcursion: { en: "Excursion", de: "Ausflug" },
   legendLabel: { en: "Legend", de: "Legende" },
   weatherNow: { en: "Current & forecast (Windy)", de: "Aktuell & Vorhersage (Windy)" },
@@ -85,12 +88,15 @@ const TYPE_LABEL_KEYS = {
   excursion: "typeExcursion",
 };
 
+// `types` lists which day.type values a legend row covers, so buildLegend()
+// can show only the rows relevant to whichever trip is currently loaded
+// (e.g. a coach tour never has "sea" or "port" days).
 const LEGEND_ITEMS = [
-  { color: TYPE_COLORS.port, key: "legendOnshore" },
-  { color: TYPE_COLORS.hotel, key: "legendLand" },
-  { color: TYPE_COLORS.excursion, key: "legendExcursion" },
-  { color: TYPE_COLORS.scenic, key: "legendScenic" },
-  { color: TYPE_COLORS.sea, key: "legendSea" },
+  { types: ["port", "embark", "disembark"], color: TYPE_COLORS.port, key: "legendOnshore" },
+  { types: ["hotel", "transfer"], color: TYPE_COLORS.hotel, key: "legendLand" },
+  { types: ["excursion"], color: TYPE_COLORS.excursion, key: "legendExcursion" },
+  { types: ["scenic"], color: TYPE_COLORS.scenic, key: "legendScenic" },
+  { types: ["sea"], color: TYPE_COLORS.sea, key: "legendSea" },
 ];
 
 // Official government travel-advisory pages, keyed by the `country` field on
@@ -104,6 +110,7 @@ const COUNTRY_ADVISORIES = {
   argentina: { fcdo: "https://www.gov.uk/foreign-travel-advice/argentina", aa: "https://www.auswaertiges-amt.de/de/service/laender/argentinien-node" },
   uruguay: { fcdo: "https://www.gov.uk/foreign-travel-advice/uruguay", aa: "https://www.auswaertiges-amt.de/de/service/laender/uruguay-node" },
   falklands: { fcdo: "https://www.gov.uk/foreign-travel-advice/falkland-islands", aa: null },
+  italy: { fcdo: "https://www.gov.uk/foreign-travel-advice/italy", aa: "https://www.auswaertiges-amt.de/de/service/laender/italien-node" },
 };
 
 // Windy's waves layer is offered as a "shipping forecast" for days actually
@@ -115,6 +122,8 @@ let map = null;
 let dayLayers = [];
 let openPanelIndex = null;
 let lang = "en";
+let tripManifest = [];
+let currentTripId = null;
 
 try {
   const saved = localStorage.getItem("tripLang");
@@ -126,12 +135,71 @@ try {
 init();
 
 async function init() {
-  const res = await fetch(TRIP_URL);
-  trip = await res.json();
+  const res = await fetch(TRIPS_INDEX_URL);
+  tripManifest = await res.json();
+
+  let savedTripId = null;
+  try {
+    savedTripId = localStorage.getItem("tripId");
+  } catch (e) {
+    /* localStorage unavailable */
+  }
+  const initialEntry = tripManifest.find((entry) => entry.id === savedTripId) || tripManifest[0];
 
   setupLangToggle();
   setupTabs();
+  setupTripSwitcher();
+  await loadTrip(initialEntry);
+}
+
+function setupTripSwitcher() {
+  const select = document.getElementById("trip-select");
+  select.innerHTML = tripManifest
+    .map((entry) => `<option value="${entry.id}">${escapeHtml(t(entry.label))}</option>`)
+    .join("");
+  select.addEventListener("change", () => {
+    const entry = tripManifest.find((e) => e.id === select.value);
+    if (entry) loadTrip(entry);
+  });
+}
+
+async function loadTrip(entry) {
+  currentTripId = entry.id;
+  try {
+    localStorage.setItem("tripId", entry.id);
+  } catch (e) {
+    /* ignore persistence failures */
+  }
+
+  const res = await fetch(`data/trips/${entry.file}`);
+  trip = await res.json();
+
+  // Reset per-trip UI state before rebuilding.
+  openPanelIndex = null;
+  document.getElementById("day-panel").classList.add("hidden");
+  if (aisOpen) toggleAisPanel();
+
+  // Leaflet computes tile positions from the container's on-screen size at
+  // init time, so #view-map must actually be visible (not display:none)
+  // before L.map()/fitBounds() run below — switch to it first, otherwise a
+  // trip loaded while on another tab renders into a zero-size box and the
+  // tiles never recover even after switching to the map tab afterwards.
+  document.querySelector('.tab-btn[data-view="map"]').click();
+
+  if (map) {
+    map.remove();
+    map = null;
+  }
+  dayLayers = [];
   buildMap();
+
+  // Not every trip has a ship (e.g. a coach tour) — hide that tab.
+  const shipTabBtn = document.querySelector('.tab-btn[data-view="ship"]');
+  shipTabBtn.hidden = !trip.vessel;
+
+  const select = document.getElementById("trip-select");
+  if (select.value !== entry.id) select.value = entry.id;
+
   renderAll();
 }
 
@@ -172,10 +240,9 @@ function renderAll() {
   document.querySelector('.tab-btn[data-view="map"]').textContent = tr("tabMap");
   document.querySelector('.tab-btn[data-view="timeline"]').textContent = tr("tabTimeline");
   document.querySelector('.tab-btn[data-view="ship"]').textContent = tr("tabShip");
-  document.getElementById("footer-copyright").textContent = tr("copyright").replace(
-    "{year}",
-    String(new Date().getFullYear())
-  );
+  document.getElementById("footer-copyright").textContent =
+    `v${APP_VERSION} · ` + tr("copyright").replace("{year}", String(new Date().getFullYear()));
+  updateTripSelectLabels();
 
   buildFlightsLink();
   updateMapLabels();
@@ -189,6 +256,14 @@ function renderAll() {
   }
 }
 
+function updateTripSelectLabels() {
+  const select = document.getElementById("trip-select");
+  [...select.options].forEach((opt) => {
+    const entry = tripManifest.find((e) => e.id === opt.value);
+    if (entry) opt.textContent = t(entry.label);
+  });
+}
+
 function updateAisLabels() {
   document.getElementById("ais-panel-title").textContent = tr("aisPanelTitle");
   document.getElementById("ais-privacy-note").textContent = tr("aisPrivacyNote");
@@ -198,7 +273,10 @@ function updateAisLabels() {
 
 function buildFlightsLink() {
   const link = document.getElementById("flights-link");
-  if (!trip.flights || !trip.flights.url) return;
+  if (!trip.flights || !trip.flights.url) {
+    link.hidden = true;
+    return;
+  }
   link.href = trip.flights.url;
   link.textContent = `✈ ${trip.flights.label ? t(trip.flights.label) : tr("flightsFallback")}`;
   link.hidden = false;
@@ -477,13 +555,16 @@ function updateMapLabels() {
 
 function buildLegend() {
   const el = document.getElementById("map-legend");
-  const rows = LEGEND_ITEMS.map(
-    (item) => `
+  const usedTypes = new Set(trip.days.map((d) => d.type));
+  const rows = LEGEND_ITEMS.filter((item) => item.types.some((type) => usedTypes.has(type)))
+    .map(
+      (item) => `
       <div class="legend-row">
         <span class="legend-swatch" style="background:${item.color}"></span>
         <span>${tr(item.key)}</span>
       </div>`
-  ).join("");
+    )
+    .join("");
   el.innerHTML = `
     <div class="legend-label">${tr("legendLabel")}</div>
     <div class="legend-rows">${rows}</div>
@@ -712,8 +793,12 @@ function buildTimeline() {
 }
 
 function buildShipInfo() {
-  const v = trip.vessel;
   const container = document.getElementById("ship-info");
+  const v = trip.vessel;
+  if (!v) {
+    container.innerHTML = "";
+    return;
+  }
   container.innerHTML = `
     <h2>${escapeHtml(v.name)}</h2>
     <p>${escapeHtml(v.operator)} · ${lang === "de" ? "Baujahr" : "built"} ${v.yearBuilt}</p>

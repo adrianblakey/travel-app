@@ -28,8 +28,9 @@ npx serve .
 ```
 index.html            App shell (three views: map, day-by-day, ship)
 css/styles.css
-js/app.js              Loads trip data, renders the map/timeline/ship views
-data/trips/*.json       One JSON file per trip (see schema below)
+js/app.js              Loads the trip manifest + trip data, renders the map/timeline/ship views
+data/trips/index.json  Manifest listing every trip (see "Multiple trips" below)
+data/trips/*.json      One JSON file per trip (see schema below)
 ```
 
 ## Deploying
@@ -122,6 +123,53 @@ stored — it's derived from `date` at render time via
 `Date.prototype.toLocaleDateString`, so it's automatically correct in
 whichever language is selected.
 
+## Multiple trips
+
+`data/trips/index.json` is a manifest of every trip the app can show:
+
+```jsonc
+[
+  {
+    "id": "slug",                 // must match the trip file's own "id"
+    "file": "slug.json",          // filename under data/trips/
+    "label": { "en": "...", "de": "..." }
+  }
+]
+```
+
+At startup, `init()` (in `js/app.js`) fetches the manifest and picks a trip
+— the one saved in `localStorage` (`tripId`) if present, otherwise the first
+entry — then `loadTrip(entry)` fetches that trip's JSON and rebuilds the map,
+timeline, ship view, and legend from it. The header's trip `<select>`
+(`setupTripSwitcher()`) lists every manifest entry and calls `loadTrip()` on
+change; switching trips persists the choice to `localStorage` so a reload
+comes back to the same trip.
+
+Because trips can be structurally different (a cruise vs. a land coach tour),
+several parts of the UI adapt to what a trip actually contains rather than
+assuming cruise-shaped data:
+
+- The map **legend** (`buildLegend()`) only renders rows for `day.type`
+  values actually present in the current trip — a land trip with no
+  `port`/`sea`/`scenic`/`embark`/`disembark` days won't show swatches for
+  them. `LEGEND_ITEMS` entries each carry a `types` array used for this
+  filtering.
+- The **Ship tab** and **flights link** are hidden entirely for a trip with
+  no `vessel` / no `flights` (`loadTrip()` toggles `shipTabBtn.hidden`;
+  `buildFlightsLink()` hides the link rather than leaving a stale one from
+  the previously-loaded trip).
+- `loadTrip()` always switches to the Route Map tab before tearing down and
+  rebuilding the Leaflet map. Leaflet sizes its tiles from the container's
+  on-screen dimensions at init time, so building the map into a hidden
+  (`display:none`) view — e.g. if the user was on "Day by Day" when they
+  switched trips — leaves it permanently broken (tiles never load, even
+  after switching to the map tab afterwards). Forcing the map tab active
+  first avoids this; don't remove that `.click()` call when touching
+  `loadTrip()`.
+
+To add a new trip: drop a new `data/trips/<slug>.json` file following the
+schema above, then add one entry for it to `data/trips/index.json`.
+
 ## Map features
 
 - **Numbered stops.** Every day gets a numbered marker (1, 2, 3…) in
@@ -177,9 +225,12 @@ To add a UI language beyond English/German, extend the `UI` dictionary and
 the `.lang-btn` markup in `index.html`; the app doesn't hardcode a
 two-language assumption anywhere except that toggle.
 
-To point the app at a different trip, change `TRIP_URL` at the top of
-`js/app.js`. Multi-trip switching (a picker instead of a hardcoded URL) is a
-natural next step once there's more than one trip to show.
+## App version
+
+The footer shows a small `v<N>` before the copyright line, from the
+`APP_VERSION` constant at the top of `js/app.js`. Bump it by 1 in every
+commit that changes the app, so the deployed version is visible at a glance
+without checking git history.
 
 ## A note on privacy
 

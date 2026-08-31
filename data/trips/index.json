@@ -1,0 +1,12 @@
+[
+  {
+    "id": "peru-south-america-2027",
+    "file": "peru-south-america-2027.json",
+    "label": { "en": "Peru & South America 2027", "de": "Peru & Südamerika 2027" }
+  },
+  {
+    "id": "amalfi-2026",
+    "file": "amalfi-2026.json",
+    "label": { "en": "Amalfi Coast 2026", "de": "Amalfiküste 2026" }
+  }
+]

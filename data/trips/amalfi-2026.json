@@ -1,0 +1,162 @@
+{
+  "id": "amalfi-2026",
+  "title": {
+    "en": "Gulf of Naples & the Amalfi Coast",
+    "de": "Golf von Neapel & Amalfiküste"
+  },
+  "subtitle": {
+    "en": "Guided coach tour based in Sorrento",
+    "de": "Geführte Busreise mit Standort in Sorrent"
+  },
+  "type": "coach-tour",
+  "startDate": "2026-10-12",
+  "endDate": "2026-10-19",
+  "travelers": ["Adrian", "Dorothee"],
+  "days": [
+    {
+      "date": "2026-10-12",
+      "type": "hotel",
+      "country": "italy",
+      "location": {
+        "lat": 40.6254, "lon": 14.3616,
+        "name": { "en": "Sorrento, Italy", "de": "Sorrent, Italien" }
+      },
+      "title": { "en": "Arrival in Naples", "de": "Ankunft in Neapel" },
+      "summary": {
+        "en": "Flight with Lufthansa from Frankfurt to Naples, then transfer to Sorrento. Check in at Hotel La Vue d'Or for a week of half-board, with panoramic views over the Gulf of Naples.",
+        "de": "Flug mit Lufthansa von Frankfurt nach Neapel, anschließend Transfer nach Sorrent. Check-in im Hotel La Vue d'Or für eine Woche Halbpension mit Panoramablick über den Golf von Neapel."
+      },
+      "lodging": {
+        "name": "Hotel La Vue d'Or, Sorrento",
+        "url": "https://www.lavuedor.it/"
+      },
+      "note": {
+        "en": "This week's excursions and free days are confirmed as part of the booking, but the tour operator (STEWA Touristik) only sends the exact day-by-day running order in the final travel documents, about 6 days before departure. The order shown here (days 2–7) is a plausible arrangement based on how these tours are typically run — not yet the confirmed schedule. This page will be updated once the real itinerary arrives.",
+        "de": "Die Ausflüge und Freizeittage dieser Woche sind laut Buchung bestätigt, aber der Reiseveranstalter (STEWA Touristik) verschickt den genauen Tagesablauf erst mit den endgültigen Reiseunterlagen, etwa 6 Tage vor Abreise. Die hier gezeigte Reihenfolge (Tag 2–7) ist eine plausible Anordnung nach dem üblichen Ablauf solcher Reisen — noch nicht der bestätigte Zeitplan. Diese Seite wird aktualisiert, sobald der tatsächliche Ablauf feststeht."
+      }
+    },
+    {
+      "date": "2026-10-13",
+      "type": "excursion",
+      "country": "italy",
+      "location": {
+        "lat": 40.7461, "lon": 14.4989,
+        "name": { "en": "Pompeii, Italy", "de": "Pompeji, Italien" }
+      },
+      "title": { "en": "Pompeii & Sorrento", "de": "Pompeji & Sorrent" },
+      "summary": {
+        "en": "A guided tour through the ash-preserved ruins of ancient Pompeii, destroyed by Vesuvius in AD 79. In the afternoon, a drive back to Sorrento for a walk through its old town, perched on a tuff-stone terrace surrounded by limestone cliffs.",
+        "de": "Geführte Besichtigung der von der Asche des Vesuvs konservierten Ausgrabungen von Pompeji, das im Jahr 79 n. Chr. zerstört wurde. Am Nachmittag Fahrt zurück nach Sorrent für einen Spaziergang durch die auf einer Tuffsteinterrasse gelegene Altstadt, umgeben von Kalksteinfelsen."
+      },
+      "note": {
+        "en": "Exact day within the week not yet confirmed — see the note on Day 1.",
+        "de": "Genauer Tag innerhalb der Woche noch nicht bestätigt — siehe Hinweis bei Tag 1."
+      }
+    },
+    {
+      "date": "2026-10-14",
+      "type": "excursion",
+      "country": "italy",
+      "location": {
+        "lat": 40.8222, "lon": 14.4260,
+        "name": { "en": "Mount Vesuvius, Italy", "de": "Vesuv, Italien" },
+        "weatherQuery": { "en": "Vesuvius", "de": "Vesuv" }
+      },
+      "title": { "en": "Vesuvius & Naples", "de": "Vesuv & Neapel" },
+      "summary": {
+        "en": "A drive up Mount Vesuvius, with the option to hike the steep gravel path to the crater rim for a view into the volcano (crater entry €27 per person, must be pre-booked). Continues to Naples for a short city tour and free time.",
+        "de": "Fahrt auf den Vesuv mit der Möglichkeit, den steilen Schotterweg zum Kraterrand mit Blick in den Vulkanschlot zu erwandern (Eintritt zum Kraterbereich 27 € pro Person, nur im Voraus buchbar). Weiter nach Neapel für eine kurze Stadtrundfahrt und Freizeit."
+      },
+      "note": {
+        "en": "Exact day within the week not yet confirmed — see the note on Day 1.",
+        "de": "Genauer Tag innerhalb der Woche noch nicht bestätigt — siehe Hinweis bei Tag 1."
+      }
+    },
+    {
+      "date": "2026-10-15",
+      "type": "hotel",
+      "country": "italy",
+      "location": {
+        "lat": 40.6254, "lon": 14.3616,
+        "name": { "en": "Sorrento, Italy", "de": "Sorrent, Italien" }
+      },
+      "title": { "en": "Free day in Sorrento", "de": "Freier Tag in Sorrent" },
+      "summary": {
+        "en": "A free day to relax at the hotel or explore Sorrento at your own pace — or join the optional full-day excursion to Capri (extra cost, minimum 15 participants).",
+        "de": "Ein freier Tag zur Erholung im Hotel oder zur eigenen Erkundung von Sorrent — oder Teilnahme am optionalen Ganztagesausflug nach Capri (gegen Aufpreis, mindestens 15 Teilnehmer)."
+      },
+      "note": {
+        "en": "Exact day within the week not yet confirmed — see the note on Day 1.",
+        "de": "Genauer Tag innerhalb der Woche noch nicht bestätigt — siehe Hinweis bei Tag 1."
+      }
+    },
+    {
+      "date": "2026-10-16",
+      "type": "excursion",
+      "country": "italy",
+      "location": {
+        "lat": 40.6340, "lon": 14.6027,
+        "name": { "en": "Amalfi Coast, Italy", "de": "Amalfiküste, Italien" }
+      },
+      "title": { "en": "Amalfi Coast", "de": "Amalfiküste" },
+      "summary": {
+        "en": "A panoramic drive along the Amalfi Coast — often called the most beautiful coastal road in the world — followed by a boat trip from Amalfi to Maiori.",
+        "de": "Panoramarundfahrt entlang der Amalfiküste — oft als die schönste Küstenstraße der Welt bezeichnet — gefolgt von einer Bootsfahrt von Amalfi nach Maiori."
+      },
+      "note": {
+        "en": "Exact day within the week not yet confirmed — see the note on Day 1.",
+        "de": "Genauer Tag innerhalb der Woche noch nicht bestätigt — siehe Hinweis bei Tag 1."
+      }
+    },
+    {
+      "date": "2026-10-17",
+      "type": "hotel",
+      "country": "italy",
+      "location": {
+        "lat": 40.6254, "lon": 14.3616,
+        "name": { "en": "Sorrento, Italy", "de": "Sorrent, Italien" }
+      },
+      "title": { "en": "Free day in Sorrento", "de": "Freier Tag in Sorrent" },
+      "summary": {
+        "en": "A free day to relax at the hotel or explore Sorrento at your own pace.",
+        "de": "Ein freier Tag zur Erholung im Hotel oder zur eigenen Erkundung von Sorrent."
+      },
+      "note": {
+        "en": "Exact day within the week not yet confirmed — see the note on Day 1.",
+        "de": "Genauer Tag innerhalb der Woche noch nicht bestätigt — siehe Hinweis bei Tag 1."
+      }
+    },
+    {
+      "date": "2026-10-18",
+      "type": "hotel",
+      "country": "italy",
+      "location": {
+        "lat": 40.6254, "lon": 14.3616,
+        "name": { "en": "Sorrento, Italy", "de": "Sorrent, Italien" }
+      },
+      "title": { "en": "Free day in Sorrento", "de": "Freier Tag in Sorrent" },
+      "summary": {
+        "en": "A last free day to relax at the hotel or explore Sorrento at your own pace.",
+        "de": "Ein letzter freier Tag zur Erholung im Hotel oder zur eigenen Erkundung von Sorrent."
+      },
+      "note": {
+        "en": "Exact day within the week not yet confirmed — see the note on Day 1.",
+        "de": "Genauer Tag innerhalb der Woche noch nicht bestätigt — siehe Hinweis bei Tag 1."
+      }
+    },
+    {
+      "date": "2026-10-19",
+      "type": "hotel",
+      "country": "italy",
+      "location": {
+        "lat": 40.8518, "lon": 14.2681,
+        "name": { "en": "Naples, Italy", "de": "Neapel, Italien" }
+      },
+      "title": { "en": "Departure", "de": "Abreise" },
+      "summary": {
+        "en": "Transfer to Naples airport and flight home with Lufthansa to Frankfurt.",
+        "de": "Transfer zum Flughafen Neapel und Rückflug mit Lufthansa nach Frankfurt."
+      }
+    }
+  ]
+}
