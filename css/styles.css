@@ -9,6 +9,7 @@
   --color-sea: #4d7ea8;
   --color-scenic: #8a5fb0;
   --color-hotel: #b5793a;
+  --color-excursion: #b3392b;
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
@@ -240,6 +241,18 @@ main {
   margin-bottom: 0.8rem;
 }
 
+.lodging-note a {
+  color: var(--color-accent);
+}
+
+.day-note {
+  font-size: 0.78rem;
+  color: #8a958f;
+  line-height: 1.4;
+  margin: -0.2rem 0 0.9rem;
+  font-style: italic;
+}
+
 /* Timeline */
 .timeline-list {
   list-style: none;
@@ -311,6 +324,7 @@ main {
 .type-sea { background: #e5edf5; color: var(--color-sea); }
 .type-scenic { background: #f0e8f7; color: var(--color-scenic); }
 .type-hotel, .type-transfer { background: #f6ead9; color: var(--color-hotel); }
+.type-excursion { background: #f7e2de; color: var(--color-excursion); }
 
 /* Ship info */
 .ship-info {

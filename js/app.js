@@ -8,6 +8,7 @@ const TYPE_COLORS = {
   scenic: "#8a5fb0",
   hotel: "#b5793a",
   transfer: "#b5793a",
+  excursion: "#b3392b",
 };
 
 const UI = {
@@ -47,6 +48,7 @@ const UI = {
   typeScenic: { en: "Scenic sailing", de: "Landschaftliche Fahrt" },
   typeHotel: { en: "On land", de: "An Land" },
   typeTransfer: { en: "Transfer", de: "Transfer" },
+  typeExcursion: { en: "Excursion", de: "Ausflug" },
 };
 
 const TYPE_LABEL_KEYS = {
@@ -57,6 +59,7 @@ const TYPE_LABEL_KEYS = {
   scenic: "typeScenic",
   hotel: "typeHotel",
   transfer: "typeTransfer",
+  excursion: "typeExcursion",
 };
 
 let trip = null;
@@ -206,6 +209,14 @@ function updateMapLabels() {
   });
 }
 
+function lodgingHtml(lodging) {
+  if (typeof lodging === "string") return escapeHtml(lodging);
+  if (lodging.url) {
+    return `<a href="${lodging.url}" target="_blank" rel="noopener">${escapeHtml(lodging.name)}</a>`;
+  }
+  return escapeHtml(lodging.name);
+}
+
 function openDayPanel(index) {
   openPanelIndex = index;
   const day = trip.days[index];
@@ -239,8 +250,9 @@ function openDayPanel(index) {
     <p class="panel-date">${formatDate(day.date)} · ${escapeHtml(t(day.location.name))}</p>
     ${timesHtml.length ? `<div class="panel-times">${timesHtml.join("")}</div>` : ""}
     <p class="panel-summary">${escapeHtml(t(day.summary))}</p>
-    ${day.lodging ? `<p class="lodging-note">${tr("stayingAt")} ${escapeHtml(day.lodging)}</p>` : ""}
+    ${day.lodging ? `<p class="lodging-note">${tr("stayingAt")} ${lodgingHtml(day.lodging)}</p>` : ""}
     ${day.showFlights && trip.flights ? `<p class="lodging-note"><a href="${trip.flights.url}" target="_blank" rel="noopener">✈ ${escapeHtml(trip.flights.label ? t(trip.flights.label) : tr("flightsFallback"))} &rarr;</a></p>` : ""}
+    ${day.note ? `<p class="day-note">${escapeHtml(t(day.note))}</p>` : ""}
     ${activitiesHtml}
   `;
 

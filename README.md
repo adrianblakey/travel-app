@@ -45,11 +45,12 @@ cruise-specific — a hotel-only or road-trip itinerary can reuse the same
 
 Any text a visitor reads is **bilingual**: instead of a plain string, it's an
 object with `en` and `de` keys, e.g. `"title": { "en": "...", "de": "..." }`.
-Fields that aren't shown as prose — dates, coordinates, `type`, proper nouns
-like `lodging` (hotel names) — stay plain strings. The `js/app.js` helper
-`t(field)` reads the right language out of a bilingual field, falling back to
-`en` if a `de` key is missing, so a new trip can be added in English only and
-translated later without breaking anything.
+Fields that aren't shown as prose — dates, coordinates, `type` — stay plain
+strings, as does the proper-noun `name` inside `lodging` (hotel names aren't
+translated). The `js/app.js` helper `t(field)` reads the right language out
+of a bilingual field, falling back to `en` if a `de` key is missing, so a new
+trip can be added in English only and translated later without breaking
+anything.
 
 ```jsonc
 {
@@ -65,7 +66,7 @@ translated later without breaking anything.
   "days": [
     {
       "date": "YYYY-MM-DD",
-      "type": "port | sea | scenic | hotel | transfer | embark | disembark",
+      "type": "port | sea | scenic | hotel | transfer | embark | disembark | excursion",
       "location": {
         "lat": 0, "lon": 0,
         "name": { "en": "...", "de": "..." }
@@ -74,8 +75,12 @@ translated later without breaking anything.
       "summary": { "en": "...", "de": "..." },
       "arrival": "HH:MM",       // omit if not applicable
       "departure": "HH:MM",     // omit if not applicable
-      "lodging": "optional hotel name (plain string, not translated)",
+      "lodging": {               // optional; name is a plain string (proper noun, not translated)
+        "name": "Hotel name",
+        "url": "https://..."     // optional — omit for no link. A bare string is still accepted.
+      },
       "showFlights": true,      // optional — surfaces the flights link on this day
+      "note": { "en": "...", "de": "..." },  // optional — small italic caveat shown under the day's detail, e.g. flagging content that was inferred rather than taken verbatim from a booking document
       "activities": [
         {
           "title": { "en": "...", "de": "..." },

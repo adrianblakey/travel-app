@@ -74,7 +74,10 @@
         "en": "Transfer from Lima airport to the hotel. First night of the pre-cruise Best of Peru extension.",
         "de": "Transfer vom Flughafen Lima zum Hotel. Erste Nacht der Peru-Verlängerung vor der Kreuzfahrt."
       },
-      "lodging": "Wyndham Grand Costa del Sol, Lima Airport",
+      "lodging": {
+        "name": "Wyndham Grand Costa del Sol, Lima Airport",
+        "url": "https://www.wyndhamhotels.com/wyndham-grand/lima-peru/wyndham-grand-costa-del-sol-lima-airport/overview"
+      },
       "showFlights": true
     },
     {
@@ -89,7 +92,31 @@
         "en": "Transfer from Lima to the Sacred Valley of the Incas. Two nights based in Urubamba to explore the valley ahead of Cusco.",
         "de": "Transfer von Lima ins Heilige Tal der Inka. Zwei Nächte in Urubamba, um das Tal vor Cusco zu erkunden."
       },
-      "lodging": "Tambo Del Inka Resort & Spa"
+      "lodging": {
+        "name": "Tambo Del Inka Resort & Spa",
+        "url": "https://www.marriott.com/en-us/hotels/cuztl-tambo-del-inka-a-luxury-collection-resort-and-spa-valle-sagrado/overview/"
+      }
+    },
+    {
+      "date": "2027-01-19",
+      "type": "excursion",
+      "location": {
+        "lat": -13.1631, "lon": -72.5450,
+        "name": { "en": "Machu Picchu, Peru", "de": "Machu Picchu, Peru" }
+      },
+      "title": { "en": "Machu Picchu", "de": "Machu Picchu" },
+      "summary": {
+        "en": "A full day dedicated to Machu Picchu — the highlight of the Sacred Valley stay. Viking's Peru extension typically visits the Inca fortress at Ollantaytambo, then takes a scenic train (PeruRail or IncaRail) through the Urubamba river valley to Aguas Calientes, followed by a bus up to the citadel itself. A guided tour takes in the temples, terraces and stone sanctuaries of Machu Picchu before the return journey to Urubamba by train in the evening.",
+        "de": "Ein ganzer Tag für Machu Picchu — der Höhepunkt des Aufenthalts im Heiligen Tal. Vikings Peru-Verlängerung besucht dabei üblicherweise die Inka-Festung von Ollantaytambo, bevor es mit der Panoramabahn (PeruRail oder IncaRail) durch das Tal des Urubamba nach Aguas Calientes geht, gefolgt von einer Busfahrt hinauf zur Zitadelle. Eine geführte Tour zeigt die Tempel, Terrassen und Steinbauten von Machu Picchu, bevor es abends mit dem Zug zurück nach Urubamba geht."
+      },
+      "lodging": {
+        "name": "Tambo Del Inka Resort & Spa",
+        "url": "https://www.marriott.com/en-us/hotels/cuztl-tambo-del-inka-a-luxury-collection-resort-and-spa-valle-sagrado/overview/"
+      },
+      "note": {
+        "en": "This day isn't individually itemized in the booking documents — it's added here based on how Viking structures the Best of Peru extension's two-night Sacred Valley stay, which centers on a full-day Machu Picchu excursion.",
+        "de": "Dieser Tag ist in den Buchungsunterlagen nicht einzeln aufgeführt — er wurde hier auf Grundlage des typischen Ablaufs von Vikings „Best of Peru“-Verlängerung ergänzt, deren zweinächtiger Aufenthalt im Heiligen Tal um einen ganztägigen Ausflug nach Machu Picchu aufgebaut ist."
+      }
     },
     {
       "date": "2027-01-20",
@@ -103,7 +130,10 @@
         "en": "Transfer from the Sacred Valley to Cusco, the historic Inca capital, for two nights before joining the ship.",
         "de": "Transfer vom Heiligen Tal nach Cusco, der historischen Inka-Hauptstadt, für zwei Nächte vor dem Einschiffen."
       },
-      "lodging": "Palacio Del Inka, Cusco"
+      "lodging": {
+        "name": "Palacio Del Inka, Cusco",
+        "url": "https://www.marriott.com/en-us/hotels/cuzlc-palacio-del-inka-a-luxury-collection-hotel-cusco/overview/"
+      }
     },
     {
       "date": "2027-01-22",
