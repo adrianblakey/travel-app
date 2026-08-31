@@ -328,6 +328,35 @@ to `.reminder-bell-wrap:not([hidden])`. Setting `display` on the bare
 true` (this happened once already — the bell stayed visible-but-empty
 instead of hiding).
 
+### Alerts: browser notification + sound
+
+Two alerts fire per reminder while a browser tab has this page open
+(`checkReminderAlerts()`, in `js/app.js`, run once at startup and then every
+`REMINDER_CHECK_INTERVAL_MS` — 30s):
+
+- **Same day.** The first time the page is open on the reminder's own UTC
+  calendar date, it plays a short chime and shows a browser Notification.
+  Re-arms the next calendar day (its localStorage key includes the date).
+- **5 minutes before.** Once the reminder is within
+  `REMINDER_WARNING_WINDOW_MS` (5 minutes) of its exact time, it plays a
+  louder four-beep alarm and shows a Notification. Fires once per reminder.
+
+Both browser Notifications and Web Audio playback require a prior user
+gesture in most browsers — a tab that's merely open and untouched can't pop
+a notification or play audio out of nowhere. `setupReminderAlerts()` hooks
+the first click/keydown/touch anywhere on the page (and the bell
+specifically) to create/resume the shared `AudioContext` and request
+Notification permission, so alerts can actually fire once the visitor has
+interacted at all. If the page is never interacted with, or notification
+permission is denied, the alert simply never becomes audible/visible — there
+is no fallback in-page toast, so don't rely on this for anything
+time-critical.
+
+Reminder dates are UTC/GMT-anchored throughout ("same day" is checked
+against UTC calendar date, not the visitor's local one), matching how the
+reminder's own displayed time is always labeled "GMT" — see the note on
+`formatReminderDateTime` above.
+
 ## App version
 
 The footer shows a small `v<N>` before the copyright line, from the

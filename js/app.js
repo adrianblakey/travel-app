@@ -1,5 +1,5 @@
 // Bump this by 1 with every commit that changes the app (shown in the footer).
-const APP_VERSION = 9;
+const APP_VERSION = 10;
 
 const TRIPS_INDEX_URL = "data/trips/index.json";
 
@@ -40,6 +40,8 @@ const UI = {
   reminderInOneDay: { en: "in 1 day", de: "in 1 Tag" },
   reminderInDays: { en: "in {n} days", de: "in {n} Tagen" },
   remindersLabel: { en: "Reminders", de: "Erinnerungen" },
+  reminderTodayNotifTitle: { en: "Reminder today", de: "Erinnerung heute" },
+  reminderSoonNotifTitle: { en: "Reminder in 5 minutes", de: "Erinnerung in 5 Minuten" },
   excursion: { en: "excursion", de: "Ausflug" },
   excursions: { en: "excursions", de: "Ausflüge" },
   highlights: { en: "Highlights", de: "Highlights" },
@@ -133,6 +135,9 @@ const COUNTRY_ADVISORIES = {
 // spent at sea or sailing scenic waters — not for days ashore.
 const SHIPPING_FORECAST_TYPES = new Set(["sea", "scenic"]);
 
+const REMINDER_CHECK_INTERVAL_MS = 30000; // how often to re-check reminders while the tab stays open
+const REMINDER_WARNING_WINDOW_MS = 5 * 60 * 1000; // "5 minutes before" alert window
+
 let trip = null;
 let map = null;
 let dayLayers = [];
@@ -184,6 +189,7 @@ async function init() {
   setupTabs();
   setupTripSwitcher();
   setupCalendarControls();
+  setupReminderAlerts();
   await loadTrip(initialEntry);
 
   // Fetches every trip's own JSON just to index its days' dates and pool
@@ -193,6 +199,11 @@ async function init() {
   await buildDateIndex();
   buildCalendar();
   buildReminders();
+
+  // Same-day/5-minutes-before alerts need allReminders, so check right away
+  // now that it's populated, then keep checking while the tab stays open.
+  checkReminderAlerts();
+  setInterval(checkReminderAlerts, REMINDER_CHECK_INTERVAL_MS);
 }
 
 async function buildDateIndex() {
@@ -445,6 +456,143 @@ function formatReminderDateTime(iso) {
     minute: "2-digit",
   });
   return `${formatted} GMT`;
+}
+
+// --- Reminder alerts: a browser notification + sound the day a reminder is
+// due, and a louder sound 5 minutes before its exact time. -----------------
+//
+// Both browser Notifications and Web Audio playback require a prior user
+// gesture in most browsers — a page that's merely open, untouched, won't be
+// allowed to pop a notification or play sound out of nowhere. setupReminderAlerts()
+// hooks the first click/keydown/touch anywhere on the page (and the bell
+// specifically, as the most on-topic place) to unlock audio and ask for
+// notification permission, so alerts can actually fire later once the
+// visitor has interacted at all — which, for a page they're actively
+// reading, happens almost immediately in practice.
+
+let audioCtx = null;
+
+function ensureAudioContext() {
+  if (!audioCtx) {
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (e) {
+      audioCtx = null;
+    }
+  } else if (audioCtx.state === "suspended") {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
+
+function requestNotificationPermissionIfNeeded() {
+  if ("Notification" in window && Notification.permission === "default") {
+    Notification.requestPermission();
+  }
+}
+
+function setupReminderAlerts() {
+  const unlock = () => {
+    ensureAudioContext();
+    requestNotificationPermissionIfNeeded();
+  };
+  ["click", "keydown", "touchstart"].forEach((evt) => document.addEventListener(evt, unlock));
+  const bell = document.getElementById("reminder-bell");
+  if (bell) bell.addEventListener("click", unlock);
+}
+
+function playTone(ctx, frequency, startTime, duration, gainValue) {
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "sine";
+  osc.frequency.value = frequency;
+  gain.gain.value = gainValue;
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(startTime);
+  osc.stop(startTime + duration);
+}
+
+// A gentle two-note chime for "this reminder is due today."
+function playChime() {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  playTone(ctx, 880, now, 0.18, 0.15);
+  playTone(ctx, 1175, now + 0.2, 0.22, 0.15);
+}
+
+// A loud, insistent four-beep alarm for "5 minutes to go."
+function playAlarm() {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  for (let i = 0; i < 4; i++) {
+    playTone(ctx, 1046, now + i * 0.35, 0.22, 0.5);
+  }
+}
+
+function showBrowserNotification(title, body) {
+  if (!("Notification" in window)) return;
+  try {
+    if (Notification.permission === "granted") {
+      new Notification(title, { body });
+    }
+  } catch (e) {
+    /* Notification constructor can throw in some contexts (e.g. no page focus support) — alert sound still plays regardless */
+  }
+}
+
+function wasAlertShown(key) {
+  try {
+    return localStorage.getItem(key) === "1";
+  } catch (e) {
+    return false;
+  }
+}
+
+function markAlertShown(key) {
+  try {
+    localStorage.setItem(key, "1");
+  } catch (e) {
+    /* ignore persistence failures — alert just may fire again next check */
+  }
+}
+
+// Checked once at startup (once allReminders is populated) and then on a
+// timer while the tab stays open, so the "5 minutes before" alert can catch
+// its moment even if the tab was opened well before it. Each alert fires at
+// most once per reminder (localStorage-flagged) — the "today" one re-arms
+// the next calendar day since its key includes today's date.
+function checkReminderAlerts() {
+  if (!allReminders.length) return;
+  const now = new Date();
+  const todayKeyPart = `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`;
+
+  allReminders.forEach((r) => {
+    const target = new Date(r.date);
+    const msUntil = target - now;
+    if (msUntil <= 0) return; // already past
+
+    const sameUtcDay =
+      now.getUTCFullYear() === target.getUTCFullYear() &&
+      now.getUTCMonth() === target.getUTCMonth() &&
+      now.getUTCDate() === target.getUTCDate();
+
+    const dayKey = `reminderDayAlert:${r.tripId}:${r.date}:${todayKeyPart}`;
+    if (sameUtcDay && !wasAlertShown(dayKey)) {
+      markAlertShown(dayKey);
+      playChime();
+      showBrowserNotification(tr("reminderTodayNotifTitle"), t(r.label));
+    }
+
+    const warnKey = `reminderWarnAlert:${r.tripId}:${r.date}`;
+    if (msUntil <= REMINDER_WARNING_WINDOW_MS && !wasAlertShown(warnKey)) {
+      markAlertShown(warnKey);
+      playAlarm();
+      showBrowserNotification(tr("reminderSoonNotifTitle"), t(r.label));
+    }
+  });
 }
 
 function updateAisLabels() {
