@@ -1,5 +1,5 @@
 // Bump this by 1 with every commit that changes the app (shown in the footer).
-const APP_VERSION = 4;
+const APP_VERSION = 5;
 
 const TRIPS_INDEX_URL = "data/trips/index.json";
 
@@ -31,6 +31,15 @@ const UI = {
   arrive: { en: "Arrive", de: "Ankunft" },
   depart: { en: "Depart", de: "Abfahrt" },
   stayingAt: { en: "Staying at:", de: "Unterkunft:" },
+  oneNight: { en: "1 night", de: "1 Nacht" },
+  multiNights: { en: "{n} nights", de: "{n} Nächte" },
+  daysToGo: { en: "{n} days to go", de: "Noch {n} Tage" },
+  oneDayToGo: { en: "1 day to go", de: "Noch 1 Tag" },
+  dayOfTrip: { en: "Day {day} of {total}", de: "Tag {day} von {total}" },
+  tripCompleted: { en: "Trip completed", de: "Reise abgeschlossen" },
+  reminderToday: { en: "today", de: "heute" },
+  reminderInOneDay: { en: "in 1 day", de: "in 1 Tag" },
+  reminderInDays: { en: "in {n} days", de: "in {n} Tagen" },
   excursion: { en: "excursion", de: "Ausflug" },
   excursions: { en: "excursions", de: "Ausflüge" },
   highlights: { en: "Highlights", de: "Highlights" },
@@ -151,13 +160,19 @@ async function init() {
   const res = await fetch(TRIPS_INDEX_URL);
   tripManifest = await res.json();
 
+  // A trip's own URL (?trip=<id>) takes priority over the last-viewed trip
+  // in localStorage, so a shared link always opens on the trip it names.
+  const urlTripId = new URLSearchParams(window.location.search).get("trip");
   let savedTripId = null;
   try {
     savedTripId = localStorage.getItem("tripId");
   } catch (e) {
     /* localStorage unavailable */
   }
-  const initialEntry = tripManifest.find((entry) => entry.id === savedTripId) || tripManifest[0];
+  const initialEntry =
+    tripManifest.find((entry) => entry.id === urlTripId) ||
+    tripManifest.find((entry) => entry.id === savedTripId) ||
+    tripManifest[0];
 
   setupLangToggle();
   setupTabs();
@@ -179,10 +194,34 @@ async function buildDateIndex() {
   dateIndex = new Map();
   tripsData.forEach((tripData) => {
     tripData.days.forEach((day, dayIndex) => {
-      if (!dateIndex.has(day.date)) dateIndex.set(day.date, []);
-      dateIndex.get(day.date).push({ tripId: tripData.id, dayIndex, type: day.type });
+      dayDates(day).forEach((iso) => {
+        if (!dateIndex.has(iso)) dateIndex.set(iso, []);
+        dateIndex.get(iso).push({ tripId: tripData.id, dayIndex, type: day.type });
+      });
     });
   });
+}
+
+// A day entry normally covers just its own `date`, but an optional
+// `endDate` lets one entry represent a multi-day stay (e.g. two nights in
+// one hotel) without needing a separate, duplicate entry for each night —
+// this returns every ISO date the entry spans, inclusive.
+function dayDates(day) {
+  if (!day.endDate || day.endDate === day.date) return [day.date];
+  const dates = [];
+  const cur = new Date(day.date + "T00:00:00");
+  const end = new Date(day.endDate + "T00:00:00");
+  while (cur <= end) {
+    // Build the ISO string from local date parts, not toISOString() (which
+    // converts to UTC and can shift the date by a day depending on the
+    // visitor's timezone) — every other date in this file is local-time.
+    const y = cur.getFullYear();
+    const m = String(cur.getMonth() + 1).padStart(2, "0");
+    const d = String(cur.getDate()).padStart(2, "0");
+    dates.push(`${y}-${m}-${d}`);
+    cur.setDate(cur.getDate() + 1);
+  }
+  return dates;
 }
 
 function setupTripSwitcher() {
@@ -209,6 +248,7 @@ async function loadTrip(entry) {
   } catch (e) {
     /* ignore persistence failures */
   }
+  updateUrlForTrip(entry.id);
 
   const res = await fetch(`data/trips/${entry.file}`);
   trip = await res.json();
@@ -240,6 +280,21 @@ async function loadTrip(entry) {
   if (select.value !== entry.id) select.value = entry.id;
 
   renderAll();
+}
+
+// Keeps the URL's ?trip= param in sync with whichever trip is loaded, so
+// the browser's address bar is always a shareable, bookmarkable link
+// straight to that trip. replaceState (not pushState) so switching trips
+// doesn't clutter the back-button history — the trip switcher already has
+// its own persisted state (localStorage) for "last viewed."
+function updateUrlForTrip(id) {
+  try {
+    const url = new URL(window.location.href);
+    url.searchParams.set("trip", id);
+    window.history.replaceState(null, "", url);
+  } catch (e) {
+    /* ignore — e.g. sandboxed/file:// contexts where history API is restricted */
+  }
 }
 
 function tr(key) {
@@ -294,6 +349,8 @@ function renderAll() {
   buildTimeline();
   buildCalendar();
   buildShipInfo();
+  buildCountdown();
+  buildReminders();
   updateAisLabels();
 
   if (openPanelIndex !== null) {
@@ -307,6 +364,68 @@ function updateTripSelectLabels() {
     const entry = tripManifest.find((e) => e.id === opt.value);
     if (entry) opt.textContent = t(entry.label);
   });
+}
+
+function buildCountdown() {
+  const el = document.getElementById("trip-countdown");
+  const msPerDay = 86400000;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const start = new Date(trip.startDate + "T00:00:00");
+  const end = new Date(trip.endDate + "T00:00:00");
+
+  if (today < start) {
+    const days = Math.round((start - today) / msPerDay);
+    el.textContent = days === 1 ? tr("oneDayToGo") : tr("daysToGo").replace("{n}", days);
+  } else if (today <= end) {
+    const dayNum = Math.round((today - start) / msPerDay) + 1;
+    const totalDays = Math.round((end - start) / msPerDay) + 1;
+    el.textContent = tr("dayOfTrip").replace("{day}", dayNum).replace("{total}", totalDays);
+  } else {
+    el.textContent = tr("tripCompleted");
+  }
+}
+
+// Shows reminders whose date/time hasn't passed yet. Dates are stored as
+// full ISO timestamps with an explicit UTC offset (e.g. a booking window
+// that opens at a specific real-world clock time, not "sometime that day"),
+// so comparisons and the displayed time both use UTC — matching GMT exactly
+// for the November dates these are used for, since GMT has no DST offset.
+function buildReminders() {
+  const container = document.getElementById("trip-reminders");
+  const reminders = trip.reminders || [];
+  const now = new Date();
+  const upcoming = reminders.filter((r) => new Date(r.date) > now);
+
+  if (!upcoming.length) {
+    container.hidden = true;
+    container.innerHTML = "";
+    return;
+  }
+
+  container.hidden = false;
+  container.innerHTML = upcoming
+    .map((r) => {
+      const target = new Date(r.date);
+      const days = Math.ceil((target - now) / 86400000);
+      const countdown =
+        days <= 0 ? tr("reminderToday") : days === 1 ? tr("reminderInOneDay") : tr("reminderInDays").replace("{n}", days);
+      return `<p class="reminder-banner">⏰ ${escapeHtml(t(r.label))} — ${escapeHtml(formatReminderDateTime(r.date))} (${escapeHtml(countdown)})</p>`;
+    })
+    .join("");
+}
+
+function formatReminderDateTime(iso) {
+  const d = new Date(iso);
+  const formatted = d.toLocaleString(localeTag(), {
+    timeZone: "UTC",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+  return `${formatted} GMT`;
 }
 
 function updateAisLabels() {
@@ -435,7 +554,7 @@ function spreadOverlappingMarkers(days, map) {
   });
 
   const latlngs = days.map((day) => L.latLng(day.location.lat, day.location.lon));
-  const MARKER_SPACING = 33; // px between adjacent marker centers — roughly one badge width plus a small gap
+  const MARKER_SPACING = 26; // px between adjacent marker centers — tight enough to read as one cluster
 
   groups.forEach((indices) => {
     if (indices.length < 2) return;
@@ -788,6 +907,15 @@ function advisoryLinksHtml(day) {
   return `<div class="weather-links"><a class="weather-link" href="${url}" target="_blank" rel="noopener">🛂 ${tr(labelKey)}</a></div>`;
 }
 
+function nightsLabel(day) {
+  // `endDate` marks the last night spent, not a checkout date, so the
+  // number of nights equals the count of calendar dates the entry spans
+  // (e.g. date=Jan 20, endDate=Jan 21 covers two nights — the 20th and the
+  // 21st — with checkout the next day handled by a separate day entry).
+  const nights = dayDates(day).length;
+  return nights <= 1 ? tr("oneNight") : tr("multiNights").replace("{n}", nights);
+}
+
 function flightsNoteHtml() {
   const label = trip.flights.label ? t(trip.flights.label) : tr("flightsFallback");
   if (trip.flights.url) {
@@ -822,11 +950,14 @@ function openDayPanel(index) {
     .join("");
 
   const typeKey = TYPE_LABEL_KEYS[day.type];
+  const dateHtml = day.endDate && day.endDate !== day.date
+    ? `${formatDateRange(day.date, day.endDate)} <span class="stat-sub">(${nightsLabel(day)})</span>`
+    : formatDate(day.date);
 
   content.innerHTML = `
     <span class="type-badge type-${day.type}">${typeKey ? tr(typeKey) : day.type}</span>
     <h2>${escapeHtml(t(day.title))}</h2>
-    <p class="panel-date">${formatDate(day.date)} · ${escapeHtml(t(day.location.name))}</p>
+    <p class="panel-date">${dateHtml} · ${escapeHtml(t(day.location.name))}</p>
     ${timesHtml.length ? `<div class="panel-times">${timesHtml.join("")}</div>` : ""}
     <p class="panel-summary">${escapeHtml(t(day.summary))}</p>
     ${day.lodging ? `<p class="lodging-note">${tr("stayingAt")} ${lodgingHtml(day.lodging)}</p>` : ""}
@@ -870,10 +1001,13 @@ function buildTimeline() {
         ? ` · <span class="excursion-link">${activityCount} ${activityCount > 1 ? tr("excursions") : tr("excursion")}</span>`
         : "";
       const typeKey = TYPE_LABEL_KEYS[day.type];
+      const dateLabel = day.endDate && day.endDate !== day.date
+        ? `${shortDate(day.date)}–${shortDate(day.endDate)}`
+        : shortDate(day.date);
       return `
         <li class="timeline-item" data-index="${index}">
           <div class="timeline-date">
-            <strong>${shortDate(day.date)}</strong>
+            <strong>${dateLabel}</strong>
             ${weekday(day.date)}
           </div>
           <div class="timeline-body">

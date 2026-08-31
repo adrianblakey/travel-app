@@ -78,6 +78,33 @@ body {
   font-size: 0.9rem;
 }
 
+.header-title .trip-countdown {
+  display: inline-block;
+  margin-top: 0.4rem;
+  padding: 0.15rem 0.6rem;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.header-title .trip-countdown:empty { display: none; }
+
+.trip-reminders {
+  padding: 0 1.1rem 0.6rem;
+}
+
+.reminder-banner {
+  margin: 0.35rem 0 0;
+  padding: 0.5rem 0.75rem;
+  background: #fdf3d9;
+  border: 1px solid #e8c96a;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: var(--color-ink);
+}
+
 .header-tabs {
   display: flex;
   flex-wrap: nowrap;

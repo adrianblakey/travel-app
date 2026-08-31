@@ -16,6 +16,15 @@
     "label": { "en": "Flight itinerary", "de": "Flugplan" },
     "url": "https://expe.onelink.me/hnLd/vfxckj9t"
   },
+  "reminders": [
+    {
+      "date": "2026-11-13T20:00:00Z",
+      "label": {
+        "en": "Book specialty-restaurant dinner reservations",
+        "de": "Tischreservierungen für die Spezialitätenrestaurants buchen"
+      }
+    }
+  ],
   "stateroom": {
     "category": "PV3 — Penthouse Veranda",
     "cabinNumber": null,
@@ -137,6 +146,7 @@
     },
     {
       "date": "2027-01-20",
+      "endDate": "2027-01-21",
       "type": "hotel",
       "country": "peru",
       "location": {

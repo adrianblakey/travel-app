@@ -22,8 +22,8 @@
       "type": "hotel",
       "country": "italy",
       "location": {
-        "lat": 40.6254, "lon": 14.3616,
-        "name": { "en": "Sorrento, Italy", "de": "Sorrent, Italien" }
+        "lat": 40.8518, "lon": 14.2681,
+        "name": { "en": "Naples, Italy", "de": "Neapel, Italien" }
       },
       "title": { "en": "Arrival in Naples", "de": "Ankunft in Neapel" },
       "summary": {

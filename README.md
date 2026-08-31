@@ -69,6 +69,18 @@ anything.
                                  // non-clickable "(not yet booked)" tab/note
                                  // instead of hiding it or linking nowhere
   "vessel": { ... },            // optional — omit for non-cruise trips
+  "reminders": [                // optional — pre-trip action items with a deadline
+    {
+      "date": "2026-11-13T20:00:00Z",  // full ISO timestamp with an explicit
+                                 // UTC offset — always shown/compared in UTC
+                                 // (labeled "GMT" in the UI), not the
+                                 // visitor's own timezone, since these are
+                                 // real-world deadlines (e.g. a reservations
+                                 // desk opening at a specific clock time)
+      "label": { "en": "...", "de": "..." }
+    }
+  ],                             // shown as a banner while `date` is still in
+                                 // the future; past reminders disappear
   "stateroom": {                // optional — cruise-specific, rendered on the Ship tab
     "category": "PV3 — Penthouse Veranda",  // plain string, Viking's own product name
     "cabinNumber": null,        // set once known; shows "to be assigned" while null
@@ -79,6 +91,17 @@ anything.
   "days": [
     {
       "date": "YYYY-MM-DD",
+      "endDate": "YYYY-MM-DD", // optional — for a multi-night stay covered by
+                                 // one entry (e.g. two nights in one hotel)
+                                 // instead of a separate entry per night.
+                                 // Marks the LAST NIGHT spent, not a checkout
+                                 // date — date=Jan 20, endDate=Jan 21 means
+                                 // two nights (the 20th and 21st), with
+                                 // checkout the next day handled by whatever
+                                 // day entry comes next. Both the calendar
+                                 // and this day's own detail panel mark/cover
+                                 // every date in between; without it the
+                                 // entry is a single day as before.
       "type": "port | sea | scenic | hotel | transfer | embark | disembark | excursion",
       "location": {
         "lat": 0, "lon": 0,
@@ -249,6 +272,22 @@ searching or clicking a date instead jumps to that date's own month — see
 the comment on `calendarViewDate` resets in `setupTripSwitcher()` vs.
 `goToDate()` if touching this logic, since the two "reset the visible month"
 paths are easy to make fight each other.
+
+## Shareable per-trip URLs
+
+Every trip gets its own link via a `?trip=<id>` query param, e.g.
+`?trip=amalfi-2026`. `init()` checks it (ahead of the last-viewed trip saved
+in `localStorage`) so a shared link always opens on the trip it names, and
+`loadTrip()` keeps it in sync via `updateUrlForTrip()` — using
+`history.replaceState`, not `pushState`, so switching trips doesn't clutter
+the back-button history.
+
+## Trip countdown
+
+The header shows a small badge under the title/subtitle: "N days to go"
+before the trip starts, "Day N of M" while it's underway, or "Trip
+completed" after — computed from `trip.startDate`/`endDate` against today's
+date at render time (`buildCountdown()`). No stored state; it's always live.
 
 ## App version
 
