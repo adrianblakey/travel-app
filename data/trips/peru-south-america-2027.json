@@ -41,6 +41,9 @@
   "vessel": {
     "name": "Viking Jupiter",
     "operator": "Viking Ocean Cruises",
+    "imo": "9796262",
+    "mmsi": "257058920",
+    "callSign": "LAYP7",
     "yearBuilt": 2019,
     "guests": 930,
     "crew": 470,

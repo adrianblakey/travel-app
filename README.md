@@ -68,7 +68,14 @@ anything.
                                  // placeholder — shows the label as a
                                  // non-clickable "(not yet booked)" tab/note
                                  // instead of hiding it or linking nowhere
-  "vessel": { ... },            // optional — omit for non-cruise trips
+  "vessel": {                    // optional — omit for non-cruise trips
+    "imo": "9796262",           // optional; IMO number, MMSI, call sign —
+    "mmsi": "257058920",        // shown on the Ship tab as stat cards. The
+    "callSign": "LAYP7",        // mmsi also drives live AIS ship-tracking
+                                 // (see "Live ship traffic" below) — omit
+                                 // any of the three that aren't known.
+    ...
+  },
   "reminders": [                // optional — pre-trip action items with a deadline
     {
       "date": "2026-11-13T20:00:00Z",  // full ISO timestamp with an explicit
@@ -241,10 +248,15 @@ schema above, then add one entry for it to `data/trips/index.json`.
   Auswärtiges Amt in German (falling back to FCDO where no AA page exists,
   e.g. the Falklands) — see `COUNTRY_ADVISORIES` in `js/app.js`. Add a
   country there before tagging a new day with it.
-- **Live ship traffic (AIS).** A 🛰 button (top-left, next to the zoom
+- **Live ship traffic (AIS).** A 🚢 button (top-left, next to the zoom
   controls) opens a floating panel embedding MarineTraffic's free live-AIS
-  map, centered on whichever day's detail panel is open (or the route's
-  overall center if none is). This is **click-to-load by design**: nothing
+  map. If the trip's `vessel` has an `mmsi`, the map tracks that specific
+  ship wherever it actually currently is — which may be nowhere near the
+  itinerary (e.g. before the cruise starts) — via MarineTraffic's
+  `mmsi:<number>` embed parameter (`aisUrl()`, in `js/app.js`). Trips
+  without a vessel/MMSI (e.g. a coach tour) fall back to centering on
+  whichever day's detail panel is open, or the route's overall center if
+  none is (`aisCenter()`). This is **click-to-load by design**: nothing
   from marinetraffic.com is fetched until the button is pressed, and the
   iframe's `src` is cleared back to `about:blank` on close — see
   `toggleAisPanel()`. There's no free, keyless, static-site-friendly way to

@@ -1,5 +1,5 @@
 // Bump this by 1 with every commit that changes the app (shown in the footer).
-const APP_VERSION = 10;
+const APP_VERSION = 11;
 
 const TRIPS_INDEX_URL = "data/trips/index.json";
 
@@ -55,6 +55,9 @@ const UI = {
   beam: { en: "Beam", de: "Breite" },
   grossTonnage: { en: "Gross tonnage", de: "Bruttoraumzahl" },
   cruisingSpeed: { en: "Cruising speed", de: "Reisegeschwindigkeit" },
+  imoNumber: { en: "IMO number", de: "IMO-Nummer" },
+  mmsiLabel: { en: "MMSI", de: "MMSI" },
+  callSignLabel: { en: "Call sign", de: "Rufzeichen" },
   copyright: {
     en: "© {year} Adrian Blakey. All rights reserved. This site and its content — text, itinerary details and photos — are the author's own work, shared for personal, non-commercial viewing only. No part of it may be reproduced, republished or used for commercial purposes without prior written permission.",
     de: "© {year} Adrian Blakey. Alle Rechte vorbehalten. Diese Website und ihre Inhalte — Texte, Reisedetails und Fotos — sind das eigene Werk des Autors und werden ausschließlich zur persönlichen, nicht-kommerziellen Ansicht bereitgestellt. Eine Vervielfältigung, Weiterveröffentlichung oder kommerzielle Nutzung ist ohne vorherige schriftliche Genehmigung nicht gestattet.",
@@ -743,7 +746,7 @@ function addAisControl() {
   const control = L.control({ position: "topleft" });
   control.onAdd = function () {
     const div = L.DomUtil.create("div", "leaflet-bar ais-control");
-    div.innerHTML = `<a href="#" id="ais-toggle-link" role="button" title="${tr("aisToggleTitle")}">🛰</a>`;
+    div.innerHTML = `<a href="#" id="ais-toggle-link" role="button" title="${tr("aisToggleTitle")}">🚢</a>`;
     L.DomEvent.disableClickPropagation(div);
     L.DomEvent.on(div, "click", (e) => {
       e.preventDefault();
@@ -766,6 +769,19 @@ function aisCenter() {
   return { lat: c.lat, lon: c.lng };
 }
 
+// When the trip has a vessel with a known MMSI, track that specific ship —
+// MarineTraffic centers on wherever it actually currently is, which may be
+// nowhere near the itinerary's ports (e.g. before the cruise starts). Trips
+// without a vessel (or without an MMSI) fall back to centering on the
+// itinerary's own location instead, same as before.
+function aisUrl() {
+  if (trip.vessel && trip.vessel.mmsi) {
+    return `https://www.marinetraffic.com/en/ais/embed/zoom:7/mmsi:${trip.vessel.mmsi}/maptype:4/shownames:false`;
+  }
+  const center = aisCenter();
+  return `https://www.marinetraffic.com/en/ais/embed/zoom:7/centery:${center.lat.toFixed(2)}/centerx:${center.lon.toFixed(2)}/maptype:4/shownames:false`;
+}
+
 function toggleAisPanel() {
   aisOpen = !aisOpen;
   const panel = document.getElementById("ais-panel");
@@ -773,8 +789,7 @@ function toggleAisPanel() {
   const toggleLink = document.getElementById("ais-toggle-link");
 
   if (aisOpen) {
-    const center = aisCenter();
-    iframe.src = `https://www.marinetraffic.com/en/ais/embed/zoom:7/centery:${center.lat.toFixed(2)}/centerx:${center.lon.toFixed(2)}/maptype:4/shownames:false`;
+    iframe.src = aisUrl();
     panel.classList.remove("hidden");
     if (toggleLink) toggleLink.classList.add("active");
   } else {
@@ -1342,6 +1357,9 @@ function buildShipInfo() {
       <div class="stat-card"><div class="stat-value">${v.beamFt} ft</div><div class="stat-label">${tr("beam")}</div></div>
       <div class="stat-card"><div class="stat-value">${v.grossTonnage.toLocaleString()}</div><div class="stat-label">${tr("grossTonnage")}</div></div>
       <div class="stat-card"><div class="stat-value">${v.speedKnots} kn</div><div class="stat-label">${tr("cruisingSpeed")}</div></div>
+      ${v.imo ? `<div class="stat-card"><div class="stat-value">${escapeHtml(v.imo)}</div><div class="stat-label">${tr("imoNumber")}</div></div>` : ""}
+      ${v.mmsi ? `<div class="stat-card"><div class="stat-value">${escapeHtml(v.mmsi)}</div><div class="stat-label">${tr("mmsiLabel")}</div></div>` : ""}
+      ${v.callSign ? `<div class="stat-card"><div class="stat-value">${escapeHtml(v.callSign)}</div><div class="stat-label">${tr("callSignLabel")}</div></div>` : ""}
     </div>
     <h3>${tr("highlights")}</h3>
     <ul>${v.highlights.map((h) => `<li>${escapeHtml(t(h))}</li>`).join("")}</ul>
